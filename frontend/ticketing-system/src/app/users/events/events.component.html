@@ -1,0 +1,94 @@
+<app-navbar></app-navbar>
+<div class="slideshow-container">
+    <!-- Full-width images with number and caption text -->
+    <div *ngFor="let slide of slides; let i = index" class="mySlides fade" [ngClass]="{'active': i === slideIndex}">
+        <div class="numbertext">{{ i + 1 }} / {{ slides.length }}</div>
+        <img [src]="slide.image">
+    </div>
+    <a class="prev" (click)="plusSlides(-1)">&#10094;</a>
+    <a class="next" (click)="plusSlides(1)">&#10095;</a>
+</div>
+<br>
+<div [ngStyle]="{ 'text-align': 'center' }">
+    <span *ngFor="let slide of slides; let i = index" class="dot" [ngClass]="{'active': i === slideIndex}"
+        (click)="currentSlide(i)"></span>
+</div>
+<section class="mt-2">
+    <div class="flex justify-center w-full items-center">
+        <h1 class="text-center text-3xl font-semibold w-96">Upcoming Events</h1>
+        <div class="flex items-center relative">
+            <input type="text" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                placeholder="search ..." />
+            <button class="absolute right-0 inset-y-0 flex items-center pr-3">
+                <i class="pi pi-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="items-center max-w-screen-xl gap-2 px-4 py-8 mx-auto xl:gap-16 md:grid md:grid-cols-3 sm:py-4 lg:px-6">
+        <div
+            class="max-w-sm bg-red-500 border border-gray-200 rounded-lg shadow:md dark:bg-gray-800 dark:border-gray-700">
+            <a href="#">
+                <img class="rounded-t-lg w-full h-80" src="showcase.avif" alt="Event 1" />
+            </a>
+            <div class="p-5">
+                <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Digital
+                        Learning
+                        Day</h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Sarit center</p>
+                <p class="mb-3 text-gray-500">1st August, 2024</p>
+                <p class="mb-3 text-gray-500">8 spaces available</p>
+                <a href="#"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
+                    Book
+                </a>
+            </div>
+        </div>
+        <!-- Event 2 -->
+        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <a href="#">
+                <img class="rounded-t-lg w-full h-80 cursor-pointer" src="showcase.avif" alt="Event 2" />
+            </a>
+            <div class="p-5">
+                <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">CAN Info
+                        Tech
+                    </h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">A brief description of the event
+                    goes
+                    here.
+                </p>
+                <p class="mb-2 text-gray-500">25th August, 2024</p>
+                <p class="mb-2 text-gray-500">24 spaces available</p>
+                <a href="#"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
+                    Book
+                </a>
+            </div>
+        </div>
+        <!-- Event 3 -->
+        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <a href="#">
+                <img class="rounded-t-lg w-full h-80" src="showcase.avif" alt="Event 3" />
+            </a>
+            <div class="p-5">
+                <a href="#">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Event 3
+                    </h5>
+                </a>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">A brief description of the event
+                    goes
+                    here.
+                </p>
+                <p class="mb-3 text-gray-500">25th August, 2024</p>
+                <p class="mb-3 text-gray-500">24 spaces available</p>
+                <a routerLink="/single-event"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
+                    Book
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
