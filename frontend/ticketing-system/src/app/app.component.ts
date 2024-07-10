@@ -6,7 +6,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { initFlowbite } from 'flowbite';
-import { EventsComponent } from './users/events/events.component';
+import { EventsComponent } from './user-component/events/events.component';
 
 @Component({
   selector: 'app-root',

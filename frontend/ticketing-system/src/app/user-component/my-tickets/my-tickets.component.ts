@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { NavbarComponent } from '../../user-component/navbar/navbar.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { Ticket } from '../../interfaces/ticket';
+import { FooterComponent } from '../../all-users/footer/footer.component';
 
 @Component({
   selector: 'app-my-tickets',
   standalone: true,
-  imports: [NavbarComponent, CommonModule],
+  imports: [NavbarComponent, CommonModule, FooterComponent],
   templateUrl: './my-tickets.component.html',
   styleUrl: './my-tickets.component.css',
 })
