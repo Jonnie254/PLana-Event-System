@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import {
+  ChildrenOutletContexts,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { EventsComponent } from './users/events/events.component';
 
@@ -12,7 +17,10 @@ import { EventsComponent } from './users/events/events.component';
 })
 export class AppComponent {
   title = 'ticketing-system';
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private contexts: ChildrenOutletContexts
+  ) {
     initFlowbite();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {

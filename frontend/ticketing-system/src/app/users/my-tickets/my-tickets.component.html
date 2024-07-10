@@ -1,0 +1,85 @@
+<app-navbar></app-navbar>
+<section class="bg-white">
+    <div class="flex justify-center w-full items-center mb-2">
+        <h1 class="text-center text-3xl font-semibold w-96">My Tickets</h1>
+        <div class="flex items-center relative">
+            <input type="text" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                placeholder="search ..." />
+            <button class="absolute right-0 inset-y-0 flex items-center pr-3">
+                <i class="pi pi-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="flex max-w-screen-xl mx-auto gap-4 px-4 py-8">
+        <!-- Side Navigation -->
+        <div class="w-1/4 bg-gray-100 p-4 rounded-md shadow-md">
+            <ul>
+                <li class="mb-4">
+                    <a (click)="selectSection('upcoming')" [class.text-blue-600]="selectedSection === 'upcoming'"
+                        class="block font-semibold text-gray-700 cursor-pointer hover:text-sky-400">Upcoming</a>
+                </li>
+                <li class="mb-4">
+                    <a (click)="selectSection('past')" [class.text-blue-600]="selectedSection === 'past'"
+                        class="block font-semibold text-gray-700 cursor-pointer hover:text-sky-400">Past Events</a>
+                </li>
+                <li class="mb-4">
+                    <a (click)="selectSection('cancelled')" [class.text-blue-600]="selectedSection === 'cancelled'"
+                        class="block font-semibold text-gray-700 cursor-pointer hover:text-sky-400">Cancelled</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Ticket Details -->
+        <div class="w-3/4">
+            <!-- Ticket Table -->
+            <div *ngIf="selectedSection === 'upcoming' || selectedSection === 'past' || selectedSection === 'cancelled'"
+                class="bg-gray-200 p-2 rounded-lg shadow-md">
+                <div class="relative overflow-x-auto">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Ticket Number</th>
+                                <th scope="col" class="px-6 py-3">Event Name</th>
+                                <th scope="col" class="px-6 py-3">Event Location</th>
+                                <th scope="col" class="px-6 py-3">Event Type</th>
+                                <th scope="col" class="px-6 py-3">Event Date</th>
+                                <th scope="col" class="px-6 py-3">Actions</th> <!-- Add Actions column -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let ticket of getFilteredTickets(); let i = index">
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 whitespace-nowrap 
+                                    {{ i % 2 === 0 ? 'bg-gray-100' : '' }}  hover:bg-blue-100">
+                                    <td class="px-6 py-4">{{ ticket.ticketNumber }}</td>
+                                    <td class="px-6 py-4">{{ ticket.eventName }}</td>
+                                    <td class="px-6 py-4">{{ ticket.eventLocation }}</td>
+                                    <td class="px-6 py-4">{{ ticket.eventType }}</td>
+                                    <td class="px-6 py-4">{{ ticket.eventDate }}</td>
+                                    <td class="px-6 py-4">
+                                        <button *ngIf="ticket.canEdit"
+                                            class="relative px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md mr-2"
+                                            (click)="editTicket(ticket)">
+                                            <i class="pi pi-pencil"></i>
+                                        </button>
+
+                                        <button *ngIf="ticket.canCancel && ticket.status === 'upcoming'"
+                                            class="relative px-4 py-2 bg-yellow-500 hover:bg-yellow-700 text-white rounded-md mr-2"
+                                            (click)="cancelTicket(ticket)">
+                                            <i class="pi pi-times"></i>
+                                        </button>
+
+                                        <button *ngIf="ticket.canDelete"
+                                            class="relative px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md"
+                                            (click)="deleteTicket(ticket)">
+                                            <i class="pi pi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
