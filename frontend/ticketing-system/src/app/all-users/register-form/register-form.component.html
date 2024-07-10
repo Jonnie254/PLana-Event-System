@@ -1,0 +1,64 @@
+<div class="max-w-4xl mx-auto font-[sans-serif] p-6 bg-white  mt-4">
+    <div class="text-center mb-6">
+        <a><img src="logo.png" alt="logo" class='w-28 inline-block' />
+        </a>
+        <h4 class="text-gray-800 text-base font-semibold mt-2">Sign up into <span
+                class="hover:text-blue-400 cursor-pointer" routerLink="/landing-page">Plana</span>
+        </h4>
+    </div>
+    <form>
+        <div class="grid sm:grid-cols-2 gap-8">
+            <div>
+                <label class="text-gray-800 text-sm mb-2 block">First Name</label>
+                <input name="name" type="text"
+                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                    placeholder="Enter name" />
+            </div>
+            <div>
+                <label class="text-gray-800 text-sm mb-2 block">Last Name</label>
+                <input name="lname" type="text"
+                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                    placeholder="Enter last name" />
+            </div>
+            <div>
+                <label class="text-gray-800 text-sm mb-2 block">Email Id</label>
+                <input name="email" type="text"
+                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                    placeholder="Enter email" />
+            </div>
+            <div>
+                <label class="text-gray-800 text-sm mb-2 block">Mobile No.</label>
+                <input name="number" type="number"
+                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                    placeholder="Enter mobile number" />
+            </div>
+            <div>
+                <label class="text-gray-800 text-sm mb-2 block">Password</label>
+                <input name="password" type="password"
+                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                    placeholder="Enter password" />
+            </div>
+            <div>
+                <label class="text-gray-800 text-sm block">Confirm Password</label>
+                <input name="cpassword" type="password"
+                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                    placeholder="Enter confirm password" />
+            </div>
+            <div>
+                <span class="hover:text-sky-400 hover:underline transition-all cursor-pointer"> Want to plan
+                    events?</span>
+            </div>
+            <div>
+                <span routerLink="/login" class="hover:text-sky-400 hover:underline transition-all cursor-pointer">
+                    Already have an
+                    account ?</span>
+            </div>
+        </div>
+        <div class="!mt-6">
+            <button type="button"
+                class="py-3.5 px-7 w-full text-sm font-semibold tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                Sign up
+            </button>
+        </div>
+    </form>
+</div>
