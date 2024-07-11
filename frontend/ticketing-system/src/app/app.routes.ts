@@ -9,6 +9,7 @@ import { RegisterFormComponent } from './all-users/register-form/register-form.c
 import { EventDashboardComponent } from './manager-component/event-dashboard/event-dashboard.component';
 import { ClientsComponent } from './manager-component/clients/clients.component';
 import { Profile2Component } from './manager-component/profile-2/profile-2.component';
+import { ManageEventComponent } from './manager-component/manage-event/manage-event.component';
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   {
@@ -48,6 +49,7 @@ export const routes: Routes = [
         path: 'profile',
         component: Profile2Component,
       },
+      { path: 'events', component: ManageEventComponent },
     ],
   },
 ];

@@ -19,26 +19,12 @@ import { EventDashboardComponent } from './manager-component/event-dashboard/eve
 })
 export class AppComponent {
   title = 'ticketing-system';
+
   constructor(private router: Router) {
-    initFlowbite();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.initializeDropdown();
+        initFlowbite();
       }
     });
-  }
-  ngAfterViewInit() {
-    this.initializeDropdown();
-  }
-  private initializeDropdown() {
-    // Ensure the dropdown toggle script is executed
-    const dropdownToggle = document.querySelector('[data-dropdown-toggle]');
-    const dropdownMenu = document.getElementById('dropdownNavbar');
-
-    if (dropdownToggle && dropdownMenu) {
-      dropdownToggle.addEventListener('click', function () {
-        dropdownMenu.classList.toggle('hidden');
-      });
-    }
   }
 }

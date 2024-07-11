@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -11,8 +17,10 @@ import { RouterLink } from '@angular/router';
   imports: [NavbarComponent, CommonModule, RouterLink],
 })
 export class EventsComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('slideContainer') slideContainer!: ElementRef;
+
   slides = [
-    { image: 'event.png' },
+    { image: 'Happy-country-1200X300--2.avif' },
     { image: 'showcase.avif' },
     { image: 'showcase.avif' },
   ];
@@ -20,43 +28,35 @@ export class EventsComponent implements AfterViewInit, OnDestroy {
   carouselInterval: any;
 
   ngAfterViewInit(): void {
-    this.showSlides();
-    this.carouselInterval = setInterval(() => this.plusSlides(1), 3000);
+    this.startAutoScroll();
   }
 
   ngOnDestroy(): void {
+    this.stopAutoScroll();
+  }
+
+  currentSlide(n: number): void {
+    this.slideIndex = n;
+    this.scrollToSlide(n);
+  }
+
+  private startAutoScroll(): void {
+    this.carouselInterval = setInterval(() => {
+      this.slideIndex = (this.slideIndex + 1) % this.slides.length;
+      this.scrollToSlide(this.slideIndex);
+    }, 3000);
+  }
+
+  private stopAutoScroll(): void {
     if (this.carouselInterval) {
       clearInterval(this.carouselInterval);
     }
   }
 
-  plusSlides(n: number): void {
-    this.slideIndex += n;
-    if (this.slideIndex >= this.slides.length) {
-      this.slideIndex = 0;
-    } else if (this.slideIndex < 0) {
-      this.slideIndex = this.slides.length - 1;
-    }
-    this.showSlides();
-  }
-
-  currentSlide(n: number): void {
-    this.slideIndex = n;
-    this.showSlides();
-  }
-
-  private showSlides(): void {
-    const slides = document.getElementsByClassName('mySlides');
-    const dots = document.getElementsByClassName('dot');
-    for (let i = 0; i < slides.length; i++) {
-      (slides[i] as HTMLElement).style.display = 'none';
-    }
-    for (let i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(' active', '');
-    }
-    (slides[this.slideIndex] as HTMLElement).style.display = 'block';
-    if (dots[this.slideIndex]) {
-      dots[this.slideIndex].className += ' active';
+  private scrollToSlide(index: number): void {
+    const slideElement = this.slideContainer.nativeElement.children[index];
+    if (slideElement) {
+      slideElement.scrollIntoView({ behavior: 'smooth', inline: 'start' });
     }
   }
 }
