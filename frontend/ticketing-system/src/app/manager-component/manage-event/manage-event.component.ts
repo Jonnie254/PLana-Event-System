@@ -19,6 +19,7 @@ import {
 export class ManageEventComponent {
   eventForm: FormGroup;
   showModal: boolean = false;
+  showEditModal: boolean = false;
   currentStep: number = 1;
 
   constructor(private fb: FormBuilder) {
@@ -132,10 +133,12 @@ export class ManageEventComponent {
   }
 
   toggleModal() {
-    console.log('Toggling modal');
     this.showModal = !this.showModal;
     if (!this.showModal) {
       this.eventForm.reset();
     }
+  }
+  toggleEditModal() {
+    this.showEditModal = !this.showEditModal;
   }
 }

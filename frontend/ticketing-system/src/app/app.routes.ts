@@ -10,6 +10,8 @@ import { EventDashboardComponent } from './manager-component/event-dashboard/eve
 import { ClientsComponent } from './manager-component/clients/clients.component';
 import { Profile2Component } from './manager-component/profile-2/profile-2.component';
 import { ManageEventComponent } from './manager-component/manage-event/manage-event.component';
+import { ManageDashboardComponent } from './manager-component/manage-dashboard/manage-dashboard.component';
+import { InboxComponent } from './manager-component/inbox/inbox.component';
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   {
@@ -44,11 +46,14 @@ export const routes: Routes = [
     path: 'event-dashboard',
     component: EventDashboardComponent,
     children: [
+      { path: '', component: ManageDashboardComponent },
+      { path: 'dashboard', component: ManageDashboardComponent },
       { path: 'client', component: ClientsComponent },
       {
         path: 'profile',
         component: Profile2Component,
       },
+      { path: 'inbox', component: InboxComponent },
       { path: 'events', component: ManageEventComponent },
     ],
   },
