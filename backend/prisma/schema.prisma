@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String         @id 
+  firstname    String     
+  lastname     String
+  password     String
+  email        String       @unique
+  phone        String
+  role         String       @default("USER")  
+  isActive     Boolean      @default(true)   
+  createdAt    DateTime     @default(now())
+  isDeleted    Boolean      @default(false)
+  isWelcome    Boolean      @default(false)
+  updatedAt    DateTime     @updatedAt
+  events      Event[]      @relation("CreatedEvents")
+  bookings    Booking[]
+  roleRequests RoleRequest[]
+
+  @@map("users")
+}
+
+model Booking {
+  id            String          @id 
+  ticketNumber  String        @unique
+  event         Event         @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  eventId       String
+  user          User          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId        String 
+  ticketType    String       
+  eventLocation String
+  eventDate     DateTime
+  eventTime     String?
+  eventImage    String?
+  status        String        
+  canEdit       Boolean       @default(false)
+  canCancel     Boolean       @default(false)
+  canDelete     Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("bookings")
+}
+
+
+model RoleRequest {
+  id             Int           @id @default(autoincrement())
+  user           User          @relation(fields: [userId], references: [id])
+  userId         String
+  requestedRole  String        
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  approved       Boolean       @default(false)
+
+  @@map("role_requests")
+}
+
+model Event {
+  id            String           @id 
+  name          String
+  image         String
+  description   String
+  date          DateTime
+  location      String
+  createdBy     User          @relation("CreatedEvents", fields: [createdById], references: [id])
+  createdById   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  singleTickets SingleTicket[]
+  groupTickets  GroupTicket[]
+  bookings      Booking[]     
+
+  @@map("events")
+}
+
+model SingleTicket {
+  id        Int      @id @default(autoincrement())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  slots     Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("single_tickets")
+}
+
+model GroupTicket {
+  id        Int      @id @default(autoincrement())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  slots     Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("group_tickets")
+}

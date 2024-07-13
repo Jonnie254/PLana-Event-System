@@ -1,0 +1,41 @@
+### create a new user
+POST http://localhost:3005/user/registerUser
+Content-Type: application/json
+
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "joeking@gmail.com",
+    "password": "password",
+    "phone": "1234567890"
+}
+
+### Get all users
+GET http://localhost:3005/user/getAllUsers
+
+
+###get user details
+Get http://localhost:3005/user/getUserById
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdlNDdiMjM4LWU0OTktNDExZS05MWU3LTc3M2NiMjkwYjIzMSIsImVtYWlsIjoiam9obmRvZUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcyMDg1OTkyNiwiZXhwIjoxNzIwODYzNTI2fQ.7QSb0Y3_eL5fvndRgpjO0lIkgmCOhkTqttyW68f0q84
+
+###update user details
+PUT http://localhost:3005/user/updateinfo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdlNDdiMjM4LWU0OTktNDExZS05MWU3LTc3M2NiMjkwYjIzMSIsImVtYWlsIjoiam9objEyQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzIwODYzOTc4LCJleHAiOjE3MjA4Njc1Nzh9.hl5jwassHku6Pkhc-1tn1CREE-OU55fnyD-fEBksY44
+Content-Type: application/json
+
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john121@gmail.com",
+    "password": "password",
+    "phone": "1234567892"
+}
+
+###request role change
+PUT http://localhost:3005/user/requestRoleChange
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhkYWZmOTZkLWMzZDItNDUwZS1iZWQxLWU4OWJiNThkNTdmYyIsImVtYWlsIjoiam9la2luZ0BnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcyMDg2NzEzNywiZXhwIjoxNzIwODcwNzM3fQ.3__oqQtOoMd9VTt_Ea1cDr9z-uQUnuyA9C29aSH-1XE
+Content-Type: application/json
+
+{
+    "role": "admin"
+}
