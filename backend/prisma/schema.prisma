@@ -78,6 +78,7 @@ model Event {
   createdBy     User          @relation("CreatedEvents", fields: [createdById], references: [id])
   createdById   String
   createdAt     DateTime      @default(now())
+  isDeleted     Boolean       @default(false)
   updatedAt     DateTime      @updatedAt
   singleTickets SingleTicket[]
   groupTickets  GroupTicket[]
@@ -87,7 +88,7 @@ model Event {
 }
 
 model SingleTicket {
-  id        Int      @id @default(autoincrement())
+  id        String      @id
   event     Event    @relation(fields: [eventId], references: [id])
   eventId   String
   slots     Int
@@ -99,7 +100,7 @@ model SingleTicket {
 }
 
 model GroupTicket {
-  id        Int      @id @default(autoincrement())
+  id        String     @id
   event     Event    @relation(fields: [eventId], references: [id])
   eventId   String
   slots     Int

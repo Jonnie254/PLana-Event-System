@@ -10,7 +10,7 @@ CREATE TABLE [dbo].[users] (
     [password] NVARCHAR(1000) NOT NULL,
     [email] NVARCHAR(1000) NOT NULL,
     [phone] NVARCHAR(1000) NOT NULL,
-    [role] NVARCHAR(1000) NOT NULL CONSTRAINT [users_role_df] DEFAULT 'USER',
+    [role] NVARCHAR(1000) NOT NULL CONSTRAINT [users_role_df] DEFAULT 'user',
     [isActive] BIT NOT NULL CONSTRAINT [users_isActive_df] DEFAULT 1,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [users_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
     [isDeleted] BIT NOT NULL CONSTRAINT [users_isDeleted_df] DEFAULT 0,
@@ -62,6 +62,7 @@ CREATE TABLE [dbo].[events] (
     [location] NVARCHAR(1000) NOT NULL,
     [createdById] NVARCHAR(1000) NOT NULL,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [events_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
+    [isDeleted] BIT NOT NULL CONSTRAINT [events_isDeleted_df] DEFAULT 0,
     [updatedAt] DATETIME2 NOT NULL,
     CONSTRAINT [events_pkey] PRIMARY KEY CLUSTERED ([id])
 );
