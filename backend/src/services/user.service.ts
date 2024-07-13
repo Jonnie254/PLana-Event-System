@@ -129,27 +129,110 @@ export class UserService {
       await prisma.$disconnect();
     }
   }
-  // Function to request a role change
-  async requestRoleChange(user_id: string, role: string) {
+
+  //user deactive account
+  async deactivateAccount(user_id: string) {
     try {
       await prisma.user.update({
         where: {
           id: user_id,
         },
         data: {
-          role: role,
+          isActive: false,
         },
       });
       return {
         success: true,
-        message: "Role change requested successfully",
+        message: "User account deactivated successfully",
         data: null,
+      };
+    } catch (error: any) {
+      console.error("Error deactivating user account:", error);
+      return {
+        success: false,
+        message: "An error occurred while deactivating user account",
+        data: null,
+      };
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+
+  // Function to request a role change
+  async requestRoleChange(user_id: string, role: string) {
+    try {
+      const newRoleRequest = await prisma.roleRequest.create({
+        data: {
+          id: uuidv4(),
+          user: { connect: { id: user_id } },
+          requestedRole: role,
+        },
+      });
+
+      return {
+        success: true,
+        message:
+          "Role change requested successfully. Waiting for admin approval.",
+        data: newRoleRequest,
       };
     } catch (error: any) {
       console.error("Error requesting role change:", error);
       return {
         success: false,
         message: "An error occurred while requesting role change",
+        data: null,
+      };
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+  // Function to approve a role change
+  async approveRoleChangeRequest(request_id: string, approve: boolean) {
+    try {
+      const roleRequest = await prisma.roleRequest.findUnique({
+        where: { id: request_id },
+        include: { user: true },
+      });
+      if (!roleRequest) {
+        return {
+          success: false,
+          message: "Role change request not found",
+          data: null,
+        };
+      }
+
+      if (approve) {
+        await prisma.user.update({
+          where: { id: roleRequest.userId },
+          data: { role: roleRequest.requestedRole },
+        });
+
+        await prisma.roleRequest.delete({
+          where: { id: request_id },
+        });
+
+        return {
+          success: true,
+          message: "Role change request approved and user role updated",
+          data: null,
+        };
+      } else {
+        await prisma.roleRequest.delete({
+          where: { id: request_id },
+        });
+
+        return {
+          success: true,
+          message: "Role change request disapproved",
+          data: null,
+        };
+      }
+    } catch (error: any) {
+      console.error("Error approving/disapproving role change request:", error);
+      return {
+        success: false,
+        message:
+          "An error occurred while approving/disapproving role change request",
         data: null,
       };
     } finally {

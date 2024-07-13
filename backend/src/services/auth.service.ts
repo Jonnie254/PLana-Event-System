@@ -15,10 +15,19 @@ export class AuthService {
       if (!user) {
         return {
           success: false,
-          message: "User with details does not exist",
+          message: "User with this email does not exist",
           data: null,
         };
       }
+
+      if (!user.isActive) {
+        return {
+          success: false,
+          message: "User account is inactive",
+          data: null,
+        };
+      }
+
       const passwordMatch = await bcrypt.compare(
         userDetails.password,
         user.password

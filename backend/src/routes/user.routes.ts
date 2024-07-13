@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
   getAllUsers,
+  protectedApproveRoleChangeRequest,
+  protectedDeactivateAccount,
   protectedGetUserById,
   protectedRequestRoleChange,
   protectedUpdateInfo,
@@ -12,6 +14,11 @@ userRouter.post("/registerUser", registerUser);
 userRouter.get("/getAllUsers", getAllUsers);
 userRouter.get("/getUserById", protectedGetUserById);
 userRouter.put("/updateinfo", protectedUpdateInfo);
-userRouter.put("/requestRoleChange", protectedRequestRoleChange);
+userRouter.post("/requestRoleChange", protectedRequestRoleChange);
+userRouter.put("/deactivateAccount", protectedDeactivateAccount);
+userRouter.post(
+  "/admin/approveRoleChangeRequest",
+  protectedApproveRoleChangeRequest
+);
 
 export default userRouter;

@@ -20,7 +20,7 @@ model User {
   password     String
   email        String       @unique
   phone        String
-  role         String       @default("USER")  
+  role         String       @default("user")  
   isActive     Boolean      @default(true)   
   createdAt    DateTime     @default(now())
   isDeleted    Boolean      @default(false)
@@ -57,7 +57,7 @@ model Booking {
 
 
 model RoleRequest {
-  id             Int           @id @default(autoincrement())
+  id             String          @id 
   user           User          @relation(fields: [userId], references: [id])
   userId         String
   requestedRole  String        

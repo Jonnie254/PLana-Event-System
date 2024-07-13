@@ -2,8 +2,8 @@ import e, { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { Res } from "../interfaces/Res";
 import { userRegister } from "../interfaces/user";
-import { verifyToken } from "../middleware/token.validation";
-import getIdFromToken from "./token.controller";
+import { verifyAdmin, verifyToken } from "../middleware/token.validation";
+import getIdFromToken from "../middleware/token.id";
 let userService = new UserService();
 // Function to register a user
 export const registerUser = async (req: Request, res: Response) => {
@@ -66,6 +66,31 @@ const updateInfo = async (req: Request, res: Response) => {
     });
   }
 };
+
+//function to deactivate account
+const deactivateAccount = async (req: Request, res: Response) => {
+  try {
+    let user_id = getIdFromToken(req);
+    if (!user_id) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized access", data: null });
+    }
+    const response: Res = await userService.deactivateAccount(user_id);
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error deactivating account:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while deactivating account",
+      data: null,
+    });
+  }
+};
 //function to request role change
 const requestRoleChange = async (req: Request, res: Response) => {
   try {
@@ -91,6 +116,45 @@ const requestRoleChange = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Function to approve/disapprove role change request
+const approveRoleChangeRequest = async (req: Request, res: Response) => {
+  try {
+    const { request_id, approve } = req.body;
+    if (!request_id || approve === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request ID or approval status",
+        data: null,
+      });
+    }
+
+    const response: Res = await userService.approveRoleChangeRequest(
+      request_id,
+      approve
+    );
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error approving/disapproving role change request:", error);
+    res.status(500).json({
+      success: false,
+      message:
+        "An error occurred while approving/disapproving role change request",
+      data: null,
+    });
+  }
+};
+
+export const protectedApproveRoleChangeRequest = [
+  verifyToken,
+  verifyAdmin,
+  approveRoleChangeRequest,
+];
 export const protectedGetUserById = [verifyToken, getUserById];
 export const protectedUpdateInfo = [verifyToken, updateInfo];
+export const protectedDeactivateAccount = [verifyToken, deactivateAccount];
 export const protectedRequestRoleChange = [verifyToken, requestRoleChange];

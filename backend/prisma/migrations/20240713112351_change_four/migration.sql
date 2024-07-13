@@ -24,7 +24,7 @@ CREATE TABLE [dbo].[users] (
 CREATE TABLE [dbo].[bookings] (
     [id] NVARCHAR(1000) NOT NULL,
     [ticketNumber] NVARCHAR(1000) NOT NULL,
-    [eventId] INT NOT NULL,
+    [eventId] NVARCHAR(1000) NOT NULL,
     [userId] NVARCHAR(1000) NOT NULL,
     [ticketType] NVARCHAR(1000) NOT NULL,
     [eventLocation] NVARCHAR(1000) NOT NULL,
@@ -43,17 +43,18 @@ CREATE TABLE [dbo].[bookings] (
 
 -- CreateTable
 CREATE TABLE [dbo].[role_requests] (
-    [id] INT NOT NULL IDENTITY(1,1),
+    [id] NVARCHAR(1000) NOT NULL,
     [userId] NVARCHAR(1000) NOT NULL,
     [requestedRole] NVARCHAR(1000) NOT NULL,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [role_requests_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
     [updatedAt] DATETIME2 NOT NULL,
+    [approved] BIT NOT NULL CONSTRAINT [role_requests_approved_df] DEFAULT 0,
     CONSTRAINT [role_requests_pkey] PRIMARY KEY CLUSTERED ([id])
 );
 
 -- CreateTable
 CREATE TABLE [dbo].[events] (
-    [id] INT NOT NULL IDENTITY(1,1),
+    [id] NVARCHAR(1000) NOT NULL,
     [name] NVARCHAR(1000) NOT NULL,
     [image] NVARCHAR(1000) NOT NULL,
     [description] NVARCHAR(1000) NOT NULL,
@@ -67,8 +68,8 @@ CREATE TABLE [dbo].[events] (
 
 -- CreateTable
 CREATE TABLE [dbo].[single_tickets] (
-    [id] NVARCHAR(1000) NOT NULL,
-    [eventId] INT NOT NULL,
+    [id] INT NOT NULL IDENTITY(1,1),
+    [eventId] NVARCHAR(1000) NOT NULL,
     [slots] INT NOT NULL,
     [price] FLOAT(53) NOT NULL,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [single_tickets_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
@@ -78,8 +79,8 @@ CREATE TABLE [dbo].[single_tickets] (
 
 -- CreateTable
 CREATE TABLE [dbo].[group_tickets] (
-    [id] NVARCHAR(1000) NOT NULL,
-    [eventId] INT NOT NULL,
+    [id] INT NOT NULL IDENTITY(1,1),
+    [eventId] NVARCHAR(1000) NOT NULL,
     [slots] INT NOT NULL,
     [price] FLOAT(53) NOT NULL,
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [group_tickets_createdAt_df] DEFAULT CURRENT_TIMESTAMP,

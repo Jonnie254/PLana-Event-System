@@ -5,7 +5,7 @@ Content-Type: application/json
 {
     "first_name": "John",
     "last_name": "Doe",
-    "email": "joeking@gmail.com",
+    "email": "smithdoe3@gmail.com",
     "password": "password",
     "phone": "1234567890"
 }
@@ -31,11 +31,29 @@ Content-Type: application/json
     "phone": "1234567892"
 }
 
+###deactivate account
+PUT http://localhost:3005/user/deactivateAccount
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4OTJiN2JkLTMwZDktNGEyNy1hNTU2LTNiMGU1MjM3OTRkYSIsImVtYWlsIjoic21pdGhkb2UxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTcyMDg3Nzc2NywiZXhwIjoxNzIwODgxMzY3fQ.NzPB9JHo9yKt4fq3mnXka3qcewZsrsdsrLpOq3Q9x1Q
+
+
 ###request role change
-PUT http://localhost:3005/user/requestRoleChange
-Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhkYWZmOTZkLWMzZDItNDUwZS1iZWQxLWU4OWJiNThkNTdmYyIsImVtYWlsIjoiam9la2luZ0BnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTcyMDg2NzEzNywiZXhwIjoxNzIwODcwNzM3fQ.3__oqQtOoMd9VTt_Ea1cDr9z-uQUnuyA9C29aSH-1XE
+POST  http://localhost:3005/user/requestRoleChange
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM2NWNkYzVjLTVjYWEtNGE5Zi04YjcwLWJmYTEzZjc4MmZlNSIsImVtYWlsIjoic21pdGhkb2UzQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzIwODc2NzI2LCJleHAiOjE3MjA4ODAzMjZ9.2Glec27LFd5dz69t1mNs-2qHnuxynIRRpu60x6iItZs
 Content-Type: application/json
 
 {
     "role": "admin"
 }
+
+
+
+### update role change
+POST http://localhost:3005/user/admin/approveRoleChangeRequest
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4OTJiN2JkLTMwZDktNGEyNy1hNTU2LTNiMGU1MjM3OTRkYSIsImVtYWlsIjoic21pdGhkb2UxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTcyMDg3NDk2OSwiZXhwIjoxNzIwODc4NTY5fQ.SPYexCCARw1E_-Ucf7m7mZcmMJJLASrM0rArbqHTWW4
+Content-Type: application/json
+
+{
+  "request_id": "edc953a2-29e4-4ef5-ba63-982c398e0d8b",
+  "approve": true
+}
+08c11909-757b-41db-9fe8-c20a4c5ae405
