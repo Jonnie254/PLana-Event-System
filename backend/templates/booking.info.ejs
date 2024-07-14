@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 100px;
+            border-radius: 8px;
+        }
+
+        .details {
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="<%= eventImage %>" alt="Event Image">
+            <h2>
+                <%= eventName %>
+            </h2>
+            <p>
+                <%= eventLocation %> - <%= eventDate %>
+            </p>
+            <p>
+                <%= eventTime %>
+            </p>
+        </div>
+        <div class="details">
+            <h3>Order Summary</h3>
+            <p><strong>Ticket Type:</strong>
+                <%= ticketType %>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

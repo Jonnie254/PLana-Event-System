@@ -75,6 +75,7 @@ model Event {
   description   String
   date          DateTime
   location      String
+  eventTime     String
   createdBy     User          @relation("CreatedEvents", fields: [createdById], references: [id])
   createdById   String
   createdAt     DateTime      @default(now())

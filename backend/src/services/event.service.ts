@@ -15,6 +15,7 @@ export class EventService {
         description,
         date,
         location,
+        eventTime,
         createdById,
         groupTickets,
         singleTickets,
@@ -29,6 +30,7 @@ export class EventService {
         description,
         date,
         location,
+        eventTime,
         createdBy: { connect: { id: createdById } },
       };
 

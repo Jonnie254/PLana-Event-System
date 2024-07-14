@@ -16,8 +16,15 @@ export interface Event {
   image: string;
   description: string;
   date: Date;
+  eventTime: string;
   location: string;
   createdById: string;
   groupTickets: GroupTicket[];
   singleTickets: SingleTicket[];
+}
+export interface BookingData {
+  eventId: string;
+  userId: string;
+  ticketType: "single" | "group";
+  slots: number;
 }

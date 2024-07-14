@@ -18,6 +18,7 @@ const createEvent = async (req: Request, res: Response) => {
     description,
     date,
     location,
+    eventTime,
     groupTickets,
     singleTickets,
   } = req.body;
@@ -30,6 +31,7 @@ const createEvent = async (req: Request, res: Response) => {
     description,
     date,
     location,
+    eventTime,
     createdById: createdById || "",
     groupTickets,
     singleTickets,
