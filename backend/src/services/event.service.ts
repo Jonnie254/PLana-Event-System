@@ -169,7 +169,6 @@ export class EventService {
     }
   }
   // Function to update an event
-
   async updateEvent(
     event_id: string,
     updatedEvent: Event,

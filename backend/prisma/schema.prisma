@@ -43,6 +43,8 @@ model Booking {
   ticketType    String       
   eventLocation String
   eventDate     DateTime
+  singleTicketSlots Int         @default(0) 
+  groupTicketSlots  Int         @default(0) 
   eventTime     String?
   eventImage    String?
   status        String        
