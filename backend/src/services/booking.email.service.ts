@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 
 const sendBookingEmail = async (bookingDetails: Booking) => {
   try {
-    // Fetch user details including email and associated event details
     const bookingWithRelations = await prisma.booking.findUnique({
       where: {
         id: bookingDetails.id,

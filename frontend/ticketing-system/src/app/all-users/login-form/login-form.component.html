@@ -1,4 +1,19 @@
-<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+<div *ngIf="loginSuccess"
+    class="absolute top-0 z-10 bg-green-500 text-white font-semibold tracking-wide flex items-center w-max max-w-sm p-4 rounded-md shadow-md shadow-green-200 m-4"
+    role="alert">
+    <i class="pi pi-check-circle mr-2"></i>
+    <span class="block sm:inline text-sm mr-3">{{loginMessage}}</span>
+    <i class="pi pi-times-circle cursor-pointer" (click)="loginSuccess = false"></i>
+</div>
+<div *ngIf="loginError"
+    class="absolute top-0 right-0 z-10 bg-red-500 text-white font-semibold tracking-wide flex items-center w-max max-w-sm p-4 rounded-md shadow-md shadow-red-200 m-4"
+    role="alert">
+    <i class="pi pi-exclamation-triangle mr-2"></i>
+    <span class="block sm:inline text-sm mr-3">{{loginMessage}}</span>
+    <i class="pi pi-times-circle cursor-pointer" (click)="loginError = false"></i>
+</div>
+<div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md relative">
+    <!-- Success Message -->
     <div class="flex justify-center mb-4">
         <div class="w-16 h-16 relative">
             <div class="w-full h-full">
@@ -7,16 +22,20 @@
         </div>
     </div>
     <h2 routerLink="landing-page" class="text-center text-2xl font-semibold mb-6">Event Planner</h2>
-    <form>
+    <form #loginForm="ngForm" (ngSubmit)="onLogin()">
         <div class="mb-4">
             <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email"
+            <input type="email" id="email" name="email" [(ngModel)]="loginData.email" required
                 class="w-full px-3 py-2 mt-1 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <p *ngIf="loginForm.submitted && loginForm.controls['email'].errors?.['required']"
+                class="text-red-500 text-sm font-semibold">Email is required</p>
         </div>
         <div class="mb-6">
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password"
+            <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required
                 class="w-full px-3 py-2 mt-1 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <p *ngIf="loginForm.submitted && loginForm.controls['password'].errors?.['required']"
+                class="text-red-500 text-sm font-semibold">Password is required</p>
         </div>
         <div class="flex justify-between text-sm mb-3">
             <a href="#" class="text-gray-600 hover:text-blue-500">Forgot password?</a>

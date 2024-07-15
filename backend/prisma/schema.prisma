@@ -21,6 +21,7 @@ model User {
   email        String       @unique
   phone        String
   role         String       @default("user")  
+  profileImage String?
   isActive     Boolean      @default(true)   
   createdAt    DateTime     @default(now())
   isDeleted    Boolean      @default(false)
