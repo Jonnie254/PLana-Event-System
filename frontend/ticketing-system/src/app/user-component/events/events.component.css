@@ -1,17 +1,17 @@
 .slideshow-container {
   width: 100%;
   position: relative;
-  height: 300px; /* Set a fixed height for the container */
+  height: 300px;
   margin: auto;
   margin-top: 20px;
   display: flex;
   gap: 20px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 0; /* Add this line */
 }
-
 .slideshow-container::-webkit-scrollbar {
   display: none; /* WebKit */
 }

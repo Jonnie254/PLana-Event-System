@@ -1,4 +1,4 @@
-<nav class="bg-gray-500 border-gray-200 shadow-navbar">
+<nav class="bg-gray-500 border-gray-200 shadow-navbar z-10">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
             <img src="logo.png" class="h-8 rounded-lg" alt="Plana Logo" />
@@ -30,13 +30,13 @@
                         class="block py-2 px-3 text-white rounded hover:bg-blue-700 md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0">About
                         Us</a>
                 </li>
-                <li *ngIf="!isLoggedin">
+                <li *ngIf="!isLoggedin" class="relative">
                     <div (click)="toggleLoginDropdown()"
                         class="flex items-center justify-between w-full py-2 px-3 text-white rounded hover:bg-blue-700 md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0 md:w-auto cursor-pointer">
                         Get Started
-                        <i pi pi-angle-down></i>
+                        <i class="pi pi-angle-down m-1"></i>
                     </div>
-                    <div class="z-10 absolute mt-2 w-48 bg-blue-500 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5"
+                    <div class="z-50 absolute right-0 mt-2 w-44 bg-blue-500 rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5"
                         [ngClass]="{'hidden': !isLoginDropdownOpen}">
                         <ul class="py-1" aria-label="submenu">
                             <li><a routerLink="/login"
