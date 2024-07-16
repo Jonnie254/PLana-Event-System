@@ -15,4 +15,12 @@ export class UserService {
   registerUser(user: userRegister): Observable<Res> {
     return this.http.post<Res>(`${this.baseUrl}/user/registerUser`, user);
   }
+  updateUser(user: userRegister): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.put<Res>(`${this.baseUrl}/user/updateinfo`, user, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 }

@@ -14,27 +14,28 @@
                     </svg>
                 </button>
                 <a class="flex ms-2 md:me-24">
-                    <img src="logo.png" class="h-8 me-3" alt="FlowBite Logo" />
+                    <img src="logo.png" class="h-8 me-3" />
                     <span
                         class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Planner</span>
                 </a>
             </div>
             <div class="flex items-center">
                 <div class="flex items-center ms-3">
-                    <div>
+                    <div class="flex items-center">
                         <button type="button"
-                            class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                            class="flex text-sm items-center bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                             aria-expanded="false" data-dropdown-toggle="dropdown-user">
                             <span class="sr-only">Open user menu</span>
-                            <img class="w-8 h-8 rounded-full"
-                                src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+                            <img [src]="user.profileImage ? user.profileImage : 'profilepic.svg'"
+                                class="w-12 h-12 rounded-full" alt="user photo">
                         </button>
+                        <i class="pi pi-angle-down text-blue-500"></i>
                     </div>
                     <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
                         id="dropdown-user">
                         <div class="px-4 py-2" role="none">
                             <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                Neil Sims
+                                {{user.email}}
                             </p>
                         </div>
                         <ul class="py-1" role="none">

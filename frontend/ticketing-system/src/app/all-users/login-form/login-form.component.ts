@@ -26,55 +26,45 @@ export class LoginFormComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin() {
-    // Reset login status
-    this.loginSuccess = false;
-    this.loginError = false;
-    this.loginMessage = '';
-
-    if (!this.loginData.email || !this.loginData.password) {
-      // Show error message and return if form fields are empty
-      this.loginError = true;
-      this.loginMessage = 'Please fill in all fields.';
-
-      setTimeout(() => {
-        this.loginError = false;
-        this.loginMessage = '';
-      }, 5000);
-
-      return;
-    }
-
     // Attempt to login
     this.authService.loginUser(this.loginData).subscribe(
-      (response: any) => {
+      (response: Res) => {
         if (response.success) {
           this.loginSuccess = true;
           this.loginMessage = response.message;
           this.resetForm();
+          localStorage.setItem('token', response.data);
+          console.log(response);
+          localStorage.setItem('role', response.data.role);
+          this.authService.checkAuthStatus();
+          this.authService.isAuthenticatedSubject.next(true);
 
           // Fetch user details to determine role
           this.authService.getUserDetails().subscribe(
             (userResponse: any) => {
-              console.log('User details:', userResponse);
-              switch (userResponse.data.role) {
-                case 'admin':
-                  this.router.navigate(['/admin']);
-                  break;
-                case 'planner':
-                  this.router.navigate(['/event-dashboard']);
-                  break;
-                case 'user':
-                  this.router.navigate(['/all-events']);
-                  break;
-                default:
-                  // Handle unknown role or fallback
-                  this.router.navigate(['/landing-page']);
-                  break;
-              }
+              // Set a timeout before redirecting
+              setTimeout(() => {
+                switch (userResponse.data.role) {
+                  case 'admin':
+                    this.router.navigate(['/admin']);
+                    break;
+                  case 'planner':
+                    this.router.navigate(['/event-dashboard']);
+                    break;
+                  case 'user':
+                    this.router.navigate(['/all-events']);
+                    break;
+                  default:
+                    this.router.navigate(['/landing-page']);
+                    break;
+                }
+              }, 3000); // 3 seconds delay before redirecting
             },
             (userError: any) => {
               console.error('Error fetching user details:', userError);
-              this.router.navigate(['/landing-page']);
+              setTimeout(() => {
+                this.router.navigate(['/landing-page']);
+              }, 3000); // 3 seconds delay before redirecting
             }
           );
         } else {

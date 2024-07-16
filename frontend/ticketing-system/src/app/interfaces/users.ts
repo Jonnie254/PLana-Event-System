@@ -12,8 +12,24 @@ export interface userRegister {
   password: string;
   email: string;
   phone: string;
+  profileImage?: string;
 }
 export interface userLogin {
   email: string;
   password: string;
+}
+export interface User {
+  id?: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  email: string;
+  phone: string;
+  profileImage?: string;
+  role: string;
+  isActive: boolean;
+  createdAt: Date;
+  isDeleted: boolean;
+  isWelcome: boolean;
+  updatedAt: Date;
 }

@@ -52,7 +52,8 @@
                     <div (click)="toggleUserDropdown()"
                         class="flex items-center justify-between w-full py-2 px-3 text-white rounded hover:bg-blue-700 md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0 md:w-auto cursor-pointer">
                         <div class="flex items-center">
-                            <img src="profilepic.svg" alt="Profile Picture" class="h-8 w-8 rounded-full mr-2">
+                            <img [src]="user.profileImage ? user.profileImage : 'profilepic.svg'" alt="Profile Picture"
+                                class="h-8 w-8 rounded-full mr-2">
                             <span>My Account</span>
                         </div>
                         <i class="pi pi-angle-down m-1"></i>

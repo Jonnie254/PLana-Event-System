@@ -12,6 +12,7 @@ import { Profile2Component } from './manager-component/profile-2/profile-2.compo
 import { ManageEventComponent } from './manager-component/manage-event/manage-event.component';
 import { ManageDashboardComponent } from './manager-component/manage-dashboard/manage-dashboard.component';
 import { InboxComponent } from './manager-component/inbox/inbox.component';
+import { ProfileNavComponent } from './user-component/profile-nav/profile-nav.component';
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   {
@@ -32,7 +33,7 @@ export const routes: Routes = [
   },
   {
     path: 'user-profile',
-    component: ProfileComponent,
+    component: ProfileNavComponent,
   },
   {
     path: 'login',
@@ -51,7 +52,7 @@ export const routes: Routes = [
       { path: 'client', component: ClientsComponent },
       {
         path: 'profile',
-        component: Profile2Component,
+        component: ProfileComponent,
       },
       { path: 'inbox', component: InboxComponent },
       { path: 'events', component: ManageEventComponent },
