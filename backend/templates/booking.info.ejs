@@ -112,45 +112,30 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="<%= eventImage %>" alt="Event Image">
-            <h2>
-                <%= eventName %>
-            </h2>
-            <p>
-                <%= eventLocation %> - <%= eventDate %>
-            </p>
-            <p>
-                <%= eventTime %>
-            </p>
-        </div>
-        <div class="details">
-            <h3>Order Summary</h3>
-            <% if (singleTicketQuantity> 0) { %>
+            <div class="header">
+                <h3>QR Code</h3>
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=="
+                    alt="Test Image">
+
+                <img src="<%= eventImage %>" alt="Event Image">
+                <h2>
+                    <%= eventName %>
+                </h2>
                 <p>
-                    <span>Single Ticket</span>
-                    <span>
-                        <%= singleTicketPrice %> * <%= singleTicketQuantity %>
-                    </span>
+                    <%= eventLocation %> - <%= eventDate %>
                 </p>
-                <% } %>
-                    <% if (groupTicketQuantity> 0) { %>
-                        <p>
-                            <span>Group Ticket</span>
-                            <span>
-                                <%= groupTicketPrice %> * <%= groupTicketQuantity %>
-                            </span>
-                        </p>
-                        <% } %>
+                <p>
+                    <%= eventTime %>
+                </p>
+            </div>
+            <div class="details">
+                <h3>Order Summary</h3>
+
+            </div>
+            <div class="summary">
+                </p>
+            </div>
         </div>
-        <div class="summary">
-            <p>
-                <span>Total amount:</span>
-                <span>
-                    <%= totalPrice %>
-                </span>
-            </p>
-        </div>
-    </div>
 </body>
 
 </html>

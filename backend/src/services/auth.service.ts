@@ -3,13 +3,23 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { userLogins } from "../interfaces/user";
 import { Res } from "../interfaces/Res";
+import { loginSchema } from "../middleware/validate.inputs";
 let prisma = new PrismaClient();
 export class AuthService {
   async login(userDetails: userLogins): Promise<Res> {
     try {
+      const { error } = loginSchema.validate(userDetails);
+      if (error) {
+        return {
+          success: false,
+          message: `${error.details[0].message}`,
+          data: null,
+        };
+      }
       const user = await prisma.user.findUnique({
         where: {
           email: userDetails.email,
+          isActive: true,
         },
       });
       if (!user) {

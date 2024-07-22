@@ -1,8 +1,12 @@
 import e, { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { Res } from "../interfaces/Res";
-import { userRegister } from "../interfaces/user";
-import { verifyAdmin, verifyToken } from "../middleware/token.validation";
+import { updateRole, userRegister, userUpdate } from "../interfaces/user";
+import {
+  verifyAdmin,
+  verifyResetTokenMiddleware,
+  verifyToken,
+} from "../middleware/token.validation";
 import getIdFromToken from "../middleware/token.id";
 let userService = new UserService();
 // Function to register a user
@@ -50,7 +54,7 @@ const updateInfo = async (req: Request, res: Response) => {
         .status(401)
         .json({ success: false, message: "Unauthorized access", data: null });
     }
-    let user: userRegister = req.body;
+    let user: userUpdate = req.body;
     let response: Res = await userService.updateUser(user_id, user);
     if (response.success) {
       res.status(200).json(response);
@@ -58,7 +62,6 @@ const updateInfo = async (req: Request, res: Response) => {
       res.status(400).json(response);
     }
   } catch (error) {
-    console.error("Error updating user:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while updating user",
@@ -87,6 +90,30 @@ const deactivateAccount = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: "An error occurred while deactivating account",
+      data: null,
+    });
+  }
+};
+//function to check if the role request already exists
+const checkRoleRequest = async (req: Request, res: Response) => {
+  try {
+    let user_id = getIdFromToken(req);
+    if (!user_id) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized access", data: null });
+    }
+    const response: Res = await userService.checkRoleRequest(user_id);
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error checking role request:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while checking role request",
       data: null,
     });
   }
@@ -121,6 +148,7 @@ const requestRoleChange = async (req: Request, res: Response) => {
 const approveRoleChangeRequest = async (req: Request, res: Response) => {
   try {
     const { request_id, approve } = req.body;
+
     if (!request_id || approve === undefined) {
       return res.status(400).json({
         success: false,
@@ -129,10 +157,11 @@ const approveRoleChangeRequest = async (req: Request, res: Response) => {
       });
     }
 
-    const response: Res = await userService.approveRoleChangeRequest(
-      request_id,
-      approve
+    const updateRoleRequest: updateRole = { request_id, approve };
+    const response = await userService.approveRoleChangeRequest(
+      updateRoleRequest
     );
+
     if (response.success) {
       res.status(200).json(response);
     } else {
@@ -148,7 +177,113 @@ const approveRoleChangeRequest = async (req: Request, res: Response) => {
     });
   }
 };
+// request password reset
+const userPasswordRequest = async (req: Request, res: Response) => {
+  try {
+    const email = req.body.email;
+    console.log("Email received:", email);
+    const response: Res = await userService.requestPasswordReset(email);
 
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error requesting password reset:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while requesting password reset",
+      data: null,
+    });
+  }
+};
+
+//function to update the passord
+const updatePassword = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const response: Res = await userService.updatePassword(email, password);
+
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while updating password",
+      data: null,
+    });
+  }
+};
+//function to get all role request
+const allRoleRequest = async (req: Request, res: Response) => {
+  try {
+    const response: Res = await userService.getAllRoleRequest();
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error fetching role request:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching role request",
+      data: null,
+    });
+  }
+};
+
+//function to get the chatroom
+const getChatRoom = async (req: Request, res: Response) => {
+  try {
+    const userId = getIdFromToken(req) || "";
+    const response: Res = await userService.getUserChatRooms(userId);
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error fetching chat room:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching chat room",
+      data: null,
+    });
+  }
+};
+
+//function to get user messages
+// export const getUserMessages = async (req: Request, res: Response) => {
+//   try {
+//     const response: Res = await userService.getUsersWithLastMessage();
+//     if (response.success) {
+//       res.status(200).json(response);
+//     } else {
+//       res.status(400).json(response);
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user messages:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "An error occurred while fetching user messages",
+//       data: null,
+//     });
+//   }
+// };
+
+// export const protectedGetUserMessages = [verifyToken, getUserMessages];
+export const protectedChatRoom = [verifyToken, getChatRoom];
+export const protectedRoleExists = [verifyToken, checkRoleRequest];
+export const updateUserPassword = [verifyResetTokenMiddleware, updatePassword];
+export const requestPasswordReset = [userPasswordRequest];
+export const protectedroleRequests = [verifyToken, verifyAdmin, allRoleRequest];
 export const protectedApproveRoleChangeRequest = [
   verifyToken,
   verifyAdmin,

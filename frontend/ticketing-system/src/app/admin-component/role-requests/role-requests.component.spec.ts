@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Profile2Component } from './profile-2.component';
+import { RoleRequestsComponent } from './role-requests.component';
 
-describe('Profile2Component', () => {
-  let component: Profile2Component;
-  let fixture: ComponentFixture<Profile2Component>;
+describe('RoleRequestsComponent', () => {
+  let component: RoleRequestsComponent;
+  let fixture: ComponentFixture<RoleRequestsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Profile2Component]
+      imports: [RoleRequestsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Profile2Component);
+    fixture = TestBed.createComponent(RoleRequestsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

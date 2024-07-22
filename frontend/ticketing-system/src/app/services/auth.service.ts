@@ -42,7 +42,12 @@ export class AuthService {
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/landing-page']);
   }
-
+  handleTokenExpired(): void {
+    this.logout();
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 3000);
+  }
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }

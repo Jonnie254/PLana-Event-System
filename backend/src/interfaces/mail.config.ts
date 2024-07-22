@@ -2,7 +2,10 @@ export interface MailConfig {
   host: string;
   service: string;
   port: number;
-  requireTLS: boolean;
+  secure: boolean;
+  requireTLS: {
+    rejectUnauthorized: boolean;
+  };
   auth: {
     user: string;
     pass: string;

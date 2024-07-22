@@ -7,25 +7,63 @@ import {
 } from "../middleware/token.validation";
 import { BookingService } from "../services/booking.services";
 import getIdFromToken from "../middleware/token.id";
+import { BookingData } from "../interfaces/Event";
 let bookingService = new BookingService();
 
 // Create a booking
 const createBooking = async (req: Request, res: Response) => {
-  const { eventId, ticketType, slots } = req.body;
+  const { eventId, ticketType, groupEmails } = req.body;
   const userId = getIdFromToken(req);
 
-  const bookingData = {
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: User ID not found in token",
+      data: null,
+    });
+  }
+
+  const bookingData: BookingData = {
     eventId,
     userId,
     ticketType,
-    slots,
+    groupEmails,
   };
 
   try {
-    const response: Res = await bookingService.bookEvent({
-      ...bookingData,
-      userId: userId || "",
-    });
+    // Validate input
+    if (!eventId || !ticketType) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid input: eventId and ticketType are required",
+        data: null,
+      });
+    }
+
+    // Additional validation for group bookings
+    if (ticketType === "group") {
+      if (
+        !groupEmails ||
+        !Array.isArray(groupEmails) ||
+        groupEmails.length === 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "For group bookings, groupEmails must be provided as a non-empty array",
+          data: null,
+        });
+      }
+    } else if (groupEmails) {
+      // If it's a single ticket, groupEmails should not be provided
+      return res.status(400).json({
+        success: false,
+        message: "groupEmails should only be provided for group bookings",
+        data: null,
+      });
+    }
+
+    const response = await bookingService.bookEvent(bookingData);
 
     if (response.success) {
       res.status(201).json(response);
@@ -41,7 +79,6 @@ const createBooking = async (req: Request, res: Response) => {
     });
   }
 };
-
 // Get all bookings
 const getAllBookings = async (req: Request, res: Response) => {
   try {

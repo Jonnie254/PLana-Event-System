@@ -1,23 +1,24 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { userRegister } from '../../interfaces/users';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { Res } from '../../interfaces/res';
+import { NotificationsComponent } from '../notifications/notifications.component';
 
 @Component({
   selector: 'app-register-form',
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule, NotificationsComponent],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
 })
 export class RegisterFormComponent {
-  createAccountMessage: string = '';
-  createAccountSuccess: boolean = false;
-  createAccountError: boolean = false;
-  passwordMatchError: boolean = false;
+  showNotification: boolean = false;
+  notificationType: 'success' | 'error' = 'success';
+  notificationMessage: string = '';
+  //check if the password and confirm password match
 
   registerData: userRegister = {
     first_name: '',
@@ -28,49 +29,51 @@ export class RegisterFormComponent {
   };
   confirmPassword: string = '';
 
-  constructor(private userService: UserService) {}
-
-  hideMessageAfterTimeout() {
+  constructor(private userService: UserService, private router: Router) {}
+  hideNotification() {
+    this.showNotification = false;
+  }
+  showNotificationWithTimeout(message: string, type: 'success' | 'error') {
+    this.notificationMessage = message;
+    this.notificationType = type;
+    this.showNotification = true;
     setTimeout(() => {
-      this.createAccountSuccess = false;
-      this.createAccountError = false;
-      this.createAccountMessage = '';
-      this.passwordMatchError = false;
+      this.hideNotification();
     }, 5000);
   }
 
   onRegister(registerForm: NgForm) {
     if (this.registerData.password !== this.confirmPassword) {
-      this.createAccountMessage = 'Passwords do not match';
-      this.passwordMatchError = true;
-      this.hideMessageAfterTimeout();
+      this.showNotificationWithTimeout('Passwords do not match', 'error');
       return;
     }
 
     if (!registerForm.valid) {
-      this.createAccountMessage = 'Please fill in all fields correctly';
-      this.createAccountError = true;
-      this.hideMessageAfterTimeout();
+      this.showNotificationWithTimeout(
+        'Please fill in all fields correctly',
+        'error'
+      );
       return;
     }
 
     this.userService.registerUser(this.registerData).subscribe(
       (response: Res) => {
         if (response.success) {
-          this.createAccountSuccess = true;
-          this.createAccountMessage = response.message;
+          this.showNotificationWithTimeout(response.message, 'success');
           this.resetForm(registerForm);
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 3000);
         } else {
-          this.createAccountError = true;
-          this.createAccountMessage = response.message;
+          this.showNotificationWithTimeout(response.message, 'error');
         }
-        this.hideMessageAfterTimeout();
       },
       (error) => {
         console.error('Registration error:', error);
-        this.createAccountError = true;
-        this.createAccountMessage = 'An error occurred while registering';
-        this.hideMessageAfterTimeout();
+        this.showNotificationWithTimeout(
+          'An error occurred while registering',
+          'error'
+        );
       }
     );
   }

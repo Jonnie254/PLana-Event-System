@@ -1,3 +1,5 @@
+import { ChatMessage } from './chatmessage';
+
 export interface Users {
   id: string;
   firstname: string;
@@ -32,4 +34,5 @@ export interface User {
   isDeleted: boolean;
   isWelcome: boolean;
   updatedAt: Date;
+  chatMessages: ChatMessage[];
 }

@@ -23,4 +23,42 @@ export class UserService {
       },
     });
   }
+
+  requestToBePlanner(role: string): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.post<Res>(
+      `${this.baseUrl}/user/requestRoleChange`,
+      { role },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+  checkRoleRequest(): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.get<Res>(`${this.baseUrl}/user/checkRoleRequest`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  //get user chat room
+  getChatRooms(): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.get<Res>(`${this.baseUrl}/user/getChatRooms`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  getUserMessages(): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.get<Res>(`${this.baseUrl}/user/getUserMessages`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 }

@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Booking } from '../../interfaces/events';
+import { BookingsService } from '../../services/bookings.service';
 
 @Component({
   selector: 'app-clients',
@@ -8,55 +10,46 @@ import { Component } from '@angular/core';
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css',
 })
-export class ClientsComponent {
+export class ClientsComponent implements OnInit {
   selectedEvent: string | null = null;
+  bookings: Booking[] = [];
+  events: { name: string }[] = [];
 
-  events = [
-    { name: 'TTNT 5' },
-    { name: 'The Big Event' },
-    { name: 'TTNT 4' },
-    { name: 'TTNT 3' },
-    { name: 'Climate Change' },
-  ];
+  constructor(private bookingService: BookingsService) {}
 
-  clients = [
-    {
-      eventName: 'TTNT 5',
-      email: 'john@example.com',
-      slots: 11,
-      ticketType: 'Group',
-    },
-    {
-      eventName: 'The Big Event',
-      email: 'jane@example.com',
-      slots: 1,
-      ticketType: 'Group',
-    },
-    {
-      eventName: 'TTNT 4',
-      email: 'alen@example.com',
-      slots: 2,
-      ticketType: 'Single',
-    },
-    {
-      eventName: 'TTNT 3',
-      email: 'kelwin@example.com',
-      slots: 1,
-      ticketType: 'Single',
-    },
-    {
-      eventName: 'Climate Change',
-      email: 'dustin@example.com',
-      slots: 1,
-      ticketType: 'Group',
-    },
-  ];
+  ngOnInit() {
+    this.getAllBookings();
+  }
 
-  toggleClientTable(eventName: string) {
+  getAllBookings() {
+    this.bookingService.getBookingsByPlanner().subscribe((res) => {
+      this.bookings = res.data;
+      this.events = this.getUniqueEvents();
+    });
+  }
+
+  getUniqueEvents(): { name: string }[] {
+    const uniqueEventNames = [
+      ...new Set(this.bookings.map((booking) => booking.event.name)),
+    ];
+    return uniqueEventNames.map((name) => ({ name }));
+  }
+
+  toggleUserTable(eventName: string) {
     this.selectedEvent = this.selectedEvent === eventName ? null : eventName;
   }
 
-  getClientsForEvent(eventName: string) {
-    return this.clients.filter((client) => client.eventName === eventName);
+  getUsersForEvent(eventName: string) {
+    return this.bookings
+      .filter((booking) => booking.event.name === eventName)
+      .map((booking) => ({
+        eventName: booking.event.name,
+        email: booking.user.email,
+        slots:
+          booking.ticketType === 'single'
+            ? booking.event.singleTickets
+            : booking.event.groupTickets,
+        ticketType: booking.ticketType,
+      }));
   }
 }

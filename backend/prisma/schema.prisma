@@ -14,85 +14,91 @@ datasource db {
 }
 
 model User {
-  id          String         @id 
-  firstname    String     
-  lastname     String
-  password     String
-  email        String       @unique
-  phone        String
-  role         String       @default("user")  
-  profileImage String?
-  isActive     Boolean      @default(true)   
-  createdAt    DateTime     @default(now())
-  isDeleted    Boolean      @default(false)
-  isWelcome    Boolean      @default(false)
-  updatedAt    DateTime     @updatedAt
-  events      Event[]      @relation("CreatedEvents")
-  bookings    Booking[]
-  roleRequests RoleRequest[]
+  id             String           @id
+  firstname      String
+  lastname       String
+  password       String
+  email          String           @unique
+  phone          String
+  role           String           @default("user")
+  profileImage   String?
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  isDeleted      Boolean          @default(false)
+  isWelcome      Boolean          @default(false)
+  updatedAt      DateTime         @updatedAt
+  passwordResets passwordReset[]
+  evenPromotions EventPromotion[]
+  events         Event[]          @relation("CreatedEvents")
+  bookings       Booking[]
+  roleRequests   RoleRequest[]
+  wallet         wallet[]
+  chatRooms      ChatRoomUser[]
+  ChatMessage    ChatMessage[]    @relation("SentMessages")
 
   @@map("users")
 }
 
-model Booking {
-  id            String          @id 
-  ticketNumber  String        @unique
-  event         Event         @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  eventId       String
-  user          User          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userId        String 
-  ticketType    String       
-  eventLocation String
-  eventDate     DateTime
-  singleTicketSlots Int         @default(0) 
-  groupTicketSlots  Int         @default(0) 
-  eventTime     String?
-  eventImage    String?
-  status        String        
-  canEdit       Boolean       @default(false)
-  canCancel     Boolean       @default(false)
-  canDelete     Boolean       @default(false)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-
-  @@map("bookings")
-}
-
-
 model RoleRequest {
-  id             String          @id 
-  user           User          @relation(fields: [userId], references: [id])
-  userId         String
-  requestedRole  String        
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  approved       Boolean       @default(false)
+  id            String   @id
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  requestedRole String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  approved      Boolean  @default(false)
 
   @@map("role_requests")
 }
 
+model Booking {
+  id                String   @id
+  ticketNumber      String   @unique
+  event             Event    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  eventId           String
+  user              User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId            String
+  ticketType        String
+  eventLocation     String
+  eventDate         DateTime
+  singleTicketSlots Int      @default(0)
+  groupTicketSlots  Int      @default(0)
+  eventTime         String?
+  eventImage        String?
+  status            String
+  canEdit           Boolean  @default(false)
+  canCancel         Boolean  @default(false)
+  canDelete         Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("bookings")
+}
+
 model Event {
-  id            String           @id 
-  name          String
-  image         String
-  description   String
-  date          DateTime
-  location      String
-  eventTime     String
-  createdBy     User          @relation("CreatedEvents", fields: [createdById], references: [id])
-  createdById   String
-  createdAt     DateTime      @default(now())
-  isDeleted     Boolean       @default(false)
-  updatedAt     DateTime      @updatedAt
-  singleTickets SingleTicket[]
-  groupTickets  GroupTicket[]
-  bookings      Booking[]     
+  id              String           @id
+  name            String
+  image           String
+  description     String
+  date            String
+  location        String
+  eventTime       String
+  createdBy       User             @relation("CreatedEvents", fields: [createdById], references: [id])
+  createdById     String
+  createdAt       DateTime         @default(now())
+  isDeleted       Boolean          @default(false)
+  updatedAt       DateTime         @updatedAt
+  singleTickets   SingleTicket[]
+  groupTickets    GroupTicket[]
+  bookings        Booking[]
+  eventPromotions EventPromotion[]
+  chatRooms       ChatRoom[]
 
   @@map("events")
 }
 
 model SingleTicket {
-  id        String      @id
+  id        String   @id
   event     Event    @relation(fields: [eventId], references: [id])
   eventId   String
   slots     Int
@@ -104,13 +110,122 @@ model SingleTicket {
 }
 
 model GroupTicket {
-  id        String     @id
-  event     Event    @relation(fields: [eventId], references: [id])
+  id        String              @id
+  event     Event               @relation(fields: [eventId], references: [id])
   eventId   String
   slots     Int
   price     Float
+  groupSize Int
+  members   GroupTicketMember[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@map("group_tickets")
+}
+
+model GroupTicketMember {
+  id            String      @id
+  groupTicket   GroupTicket @relation(fields: [groupTicketId], references: [id])
+  groupTicketId String
+  email         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("group_ticket_members")
+}
+
+model EventPromotion {
+  id            String   @id
+  event         Event    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  eventId       String
+  requestedBy   User     @relation(fields: [requestedById], references: [id])
+  requestedById String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  isApproved    Boolean  @default(false)
+  isDeleted     Boolean  @default(false)
+
+  @@map("event_promotions")
+}
+
+model passwordReset {
+  id        String   @id
+  email     String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  code      String   @unique
+  ExpiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("group_tickets")
+  @@map("password_resets")
+}
+
+model BookingAnalytics {
+  id            String   @id
+  eventId       String
+  eventName     String
+  totalBookings Int      @default(0)
+  totalRevenue  Float    @default(0)
+  date          DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("booking_analytics")
+}
+
+model EventAnalytics {
+  id               String   @id
+  eventId          String
+  eventName        String
+  totalTicketsSold Int      @default(0)
+  totalRevenue     Float    @default(0)
+  attendance       Int      @default(0)
+  date             DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("event_analytics")
+}
+
+model wallet {
+  id        String   @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  balance   Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("wallets")
+}
+
+model ChatMessage {
+  id         String   @id
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  chatRoomId String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  message    String
+  createdAt  DateTime @default(now())
+
+  @@map("chat_messages")
+}
+
+model ChatRoom {
+  id       String         @id
+  eventId  String
+  event    Event          @relation(fields: [eventId], references: [id])
+  users    ChatRoomUser[]
+  messages ChatMessage[]
+
+  @@map("chat_rooms")
+}
+
+model ChatRoomUser {
+  chatRoomId String
+  userId     String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  user       User     @relation(fields: [userId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  @@id([chatRoomId, userId])
+  @@map("chat_room_users")
 }

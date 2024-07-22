@@ -1,97 +1,80 @@
 <div class="max-w-4xl mx-auto font-[sans-serif] p-6 bg-white mt-4">
     <!-- Success Message -->
-    <div *ngIf="createAccountSuccess"
-        class="absolute top-1 right-0 left-1/2 transform -translate-x-1/2 z-10 bg-green-500 text-white font-semibold tracking-wide flex items-center w-max max-w-sm p-4 rounded-md shadow-md shadow-green-200"
-        role="alert">
-        <i class="pi pi-check-circle mr-2"></i>
-        <span class="block sm:inline text-sm mr-3">{{createAccountMessage}}</span>
-        <i class="pi pi-times-circle cursor-pointer" (click)="createAccountSuccess = false"></i>
-    </div>
-    <!-- Error Message -->
-    <div *ngIf="createAccountError"
-        class="absolute top-1 left-1/2 right-0 transform -translate-x-1/2 z-10 bg-red-500 text-white font-semibold tracking-wide flex items-center w-max max-w-sm p-4 rounded-md shadow-md shadow-red-200"
-        role="alert">
-        <i class="pi pi-exclamation-triangle mr-2"></i>
-        <span class="block sm:inline text-sm mr-3">{{createAccountMessage}}</span>
-        <i class="pi pi-times-circle cursor-pointer" (click)="createAccountError = false"></i>
-    </div>
-    <!-- Password Match Error -->
-    <div *ngIf="passwordMatchError"
-        class="absolute top-1 left-1/2 right-0 transform -translate-x-1/2 z-10 bg-red-500 text-white font-semibold tracking-wide flex items-center w-max max-w-sm p-4 rounded-md shadow-md shadow-red-200"
-        role="alert">
-        <i class="pi pi-exclamation-triangle mr-2"></i>
-        <span class="block sm:inline text-sm mr-3">Passwords do not match</span>
-        <i class="pi pi-times-circle cursor-pointer" (click)="passwordMatchError = false"></i>
-    </div>
-    <div class="text-center mb-6">
-        <a><img src="logo.png" alt="logo" class='w-28 inline-block' /></a>
-        <h4 class="text-gray-800 text-base font-semibold mt-2">Sign up into <span
-                class="hover:text-blue-400 cursor-pointer" routerLink="/landing-page">Plana</span></h4>
-    </div>
-    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
-        <div class="grid sm:grid-cols-2 gap-2">
-            <div>
-                <label class="text-gray-800 text-sm mb-2 block">First Name</label>
-                <input name="firstname" type="text" [(ngModel)]="registerData.first_name" required
-                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                    placeholder="Enter name" />
-                <p *ngIf="registerForm.submitted && registerForm.controls['firstname'].errors?.['required']"
-                    class="text-red-500 text-sm font-semibold">First Name is required</p>
-            </div>
-            <div>
-                <label class="text-gray-800 text-sm mb-2 block">Last Name</label>
-                <input name="lastname" type="text" [(ngModel)]="registerData.last_name" required
-                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                    placeholder="Enter last name" />
-                <p *ngIf="registerForm.submitted && registerForm.controls['lastname'].errors?.['required']"
-                    class="text-red-500 text-sm font-semibold">Last Name is required</p>
-            </div>
-            <div>
-                <label class="text-gray-800 text-sm mb-2 block">Email</label>
-                <input name="email" type="email" [(ngModel)]="registerData.email" required
-                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                    placeholder="Enter email" />
-                <p *ngIf="registerForm.submitted && registerForm.controls['email'].errors?.['required']"
-                    class="text-red-500 text-sm font-semibold">Email is required</p>
-            </div>
-            <div>
-                <label class="text-gray-800 text-sm mb-2 block">Mobile No.</label>
-                <input name="phone" type="tel" [(ngModel)]="registerData.phone" required
-                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                    placeholder="Enter mobile number" />
-                <p *ngIf="registerForm.submitted && registerForm.controls['phone'].errors?.['required']"
-                    class="text-red-500 text-sm font-semibold">Mobile number is required</p>
-            </div>
-            <div>
-                <label class="text-gray-800 text-sm mb-2 block">Password</label>
-                <input name="password" type="password" [(ngModel)]="registerData.password" required
-                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                    placeholder="Enter password" />
-                <p *ngIf="registerForm.submitted && registerForm.controls['password'].errors?.['required']"
-                    class="text-red-500 text-sm font-semibold">Password is required</p>
-            </div>
-            <div>
-                <label class="text-gray-800 text-sm mb-2 block">Confirm Password</label>
-                <input name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required
-                    class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
-                    placeholder="Enter confirm password" />
-                <p *ngIf="confirmPassword !== registerData.password && (registerForm.submitted || registerForm.controls['confirmPassword'].touched)"
-                    class="text-red-500 text-sm font-semibold">Passwords do not match</p>
-            </div>
-            <div>
-                <span class="hover:text-sky-400 hover:underline transition-all cursor-pointer"> Want to plan
-                    events?</span>
-            </div>
-            <div>
-                <span routerLink="/login" class="hover:text-sky-400 hover:underline transition-all cursor-pointer">
-                    Already have an account?</span>
-            </div>
+    <div class="max-w-4xl mx-auto font-[sans-serif] p-6 bg-white mt-4">
+        <!-- Success Message -->
+        <app-notifications [show]="showNotification" [type]="notificationType" [message]="notificationMessage"
+            (close)="hideNotification()">
+        </app-notifications>
+        <div class="text-center mb-6">
+            <a><img src="logo.png" alt="logo" class='w-28 inline-block' /></a>
+            <h4 class="text-gray-800 text-base font-semibold mt-2">Sign up into <span
+                    class="hover:text-blue-400 cursor-pointer" routerLink="/landing-page">Plana</span></h4>
         </div>
-        <div class="mt-6 flex justify-center">
-            <button type="submit"
-                class="py-3.5 px-7 w-full sm:w-96 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-400 hover:bg-blue-700 focus:outline-none">
-                Sign up
-            </button>
-        </div>
-    </form>
+        <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
+            <div class="grid sm:grid-cols-2 gap-2">
+                <div>
+                    <label class="text-gray-800 text-sm mb-2 block">First Name</label>
+                    <input name="firstname" type="text" [(ngModel)]="registerData.first_name" required
+                        class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                        placeholder="Enter name" />
+                    <p *ngIf="registerForm.submitted && registerForm.controls['firstname'].errors?.['required']"
+                        class="text-red-500 text-sm font-semibold">First Name is required</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-2 block">Last Name</label>
+                    <input name="lastname" type="text" [(ngModel)]="registerData.last_name" required
+                        class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                        placeholder="Enter last name" />
+                    <p *ngIf="registerForm.submitted && registerForm.controls['lastname'].errors?.['required']"
+                        class="text-red-500 text-sm font-semibold">Last Name is required</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-2 block">Email</label>
+                    <input name="email" type="email" [(ngModel)]="registerData.email" required
+                        class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                        placeholder="Enter email" />
+                    <p *ngIf="registerForm.submitted && registerForm.controls['email'].errors?.['required']"
+                        class="text-red-500 text-sm font-semibold">Email is required</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-2 block">Mobile No.</label>
+                    <input name="phone" type="tel" [(ngModel)]="registerData.phone" required
+                        class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                        placeholder="Enter mobile number" />
+                    <p *ngIf="registerForm.submitted && registerForm.controls['phone'].errors?.['required']"
+                        class="text-red-500 text-sm font-semibold">Mobile number is required</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-2 block">Password</label>
+                    <input name="password" type="password" [(ngModel)]="registerData.password" required
+                        class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                        placeholder="Enter password" />
+                    <p *ngIf="registerForm.submitted && registerForm.controls['password'].errors?.['required']"
+                        class="text-red-500 text-sm font-semibold">Password is required</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-2 block">Confirm Password</label>
+                    <input name="confirmPassword" type="password" [(ngModel)]="confirmPassword" required
+                        class="bg-gray-100 w-full text-gray-800 text-sm px-4 py-2.0 rounded-md focus:bg-transparent outline-blue-500 transition-all"
+                        placeholder="Enter confirm password" />
+                    <p *ngIf="confirmPassword !== registerData.password && (registerForm.submitted || registerForm.controls['confirmPassword'].touched)"
+                        class="text-red-500 text-sm font-semibold">Passwords do not match</p>
+                </div>
+                <div>
+                    <span class="hover:text-sky-400 hover:underline transition-all cursor-pointer"> Want to plan
+                        events?</span>
+                </div>
+                <div>
+                    <span routerLink="/login" class="hover:text-sky-400 hover:underline transition-all cursor-pointer">
+                        Already have an account?</span>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-center">
+                <button type="submit"
+                    class="py-3.5 px-7 w-full sm:w-96 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-400 hover:bg-blue-700 focus:outline-none">
+                    Sign up
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

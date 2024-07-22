@@ -6,16 +6,18 @@ import { userLogin } from '../../interfaces/users';
 import { UserService } from '../../services/user.service';
 import { Res } from '../../interfaces/res';
 import { AuthService } from '../../services/auth.service';
+import { RippleModule } from 'primeng/ripple';
+import { NotificationsComponent } from '../notifications/notifications.component';
 
 @Component({
   selector: 'app-login-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, NotificationsComponent],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
 })
 export class LoginFormComponent {
-  loginData: any = {
+  loginData: userLogin = {
     email: '',
     password: '',
   };
@@ -32,13 +34,12 @@ export class LoginFormComponent {
         if (response.success) {
           this.loginSuccess = true;
           this.loginMessage = response.message;
-          this.resetForm();
           localStorage.setItem('token', response.data);
-          console.log(response);
-          localStorage.setItem('role', response.data.role);
           this.authService.checkAuthStatus();
           this.authService.isAuthenticatedSubject.next(true);
-
+          setTimeout(() => {
+            this.resetForm();
+          }, 3000);
           // Fetch user details to determine role
           this.authService.getUserDetails().subscribe(
             (userResponse: any) => {
@@ -46,7 +47,7 @@ export class LoginFormComponent {
               setTimeout(() => {
                 switch (userResponse.data.role) {
                   case 'admin':
-                    this.router.navigate(['/admin']);
+                    this.router.navigate(['/admin-dashboard']);
                     break;
                   case 'planner':
                     this.router.navigate(['/event-dashboard']);
@@ -58,7 +59,7 @@ export class LoginFormComponent {
                     this.router.navigate(['/landing-page']);
                     break;
                 }
-              }, 3000); // 3 seconds delay before redirecting
+              }, 3000);
             },
             (userError: any) => {
               console.error('Error fetching user details:', userError);

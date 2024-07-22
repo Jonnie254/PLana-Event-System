@@ -19,88 +19,38 @@
             </button>
         </div>
     </div>
-    <div class="items-center max-w-screen-xl gap-2 px-4 py-8 mx-auto xl:gap-8 md:grid md:grid-cols-3 sm:py-4 lg:px-6">
-        <!-- Event 1 -->
-        <div
-            class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <a href="#">
-                <img class="rounded-t-lg w-full h-64 object-cover" src="showcase.avif" alt="Event 1" />
+    <div class="grid grid-cols-1 gap-6 px-4 py-8 mx-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-screen-xl">
+        <div *ngFor="let event of events"
+            class="flex flex-col  cursor-pointer justify-between max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
+            <a>
+                <img *ngIf="event.image" class="rounded-t-lg w-full max-h-48 object-cover" [src]="event.image"
+                    alt="Event 1" />
+                <div *ngIf="!event.image" class="rounded-t-lg w-full max-h-48 h-48 bg-gray-200 dark:bg-gray-700"></div>
             </a>
-            <div class="p-4">
+            <div class="p-4 flex-grow">
                 <a href="#">
-                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Digital Learning Day
-                    </h5>
+                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{event.name}}</h5>
                 </a>
                 <div class="flex items-center mb-3 gap-2">
                     <i class="pi pi-home text-sky-400"></i>
-                    <p class="font-semibold text-gray-700 dark:text-gray-400">Sarit center</p>
+                    <p class="font-semibold text-gray-700 dark:text-gray-400">{{event.location}}</p>
                 </div>
                 <div class="flex items-center mb-3 gap-2">
                     <i class="pi pi-calendar text-sky-400"></i>
-                    <p class="text-gray-500">1st August, 2024</p>
+                    <p class="text-gray-500">{{event.date | date}}</p>
+                </div>
+                <div class="flex items-center mb-3 gap-2">
+                    <i class="pi pi-clock text-sky-400"></i>
+                    <p class="text-gray-500">{{event.eventTime}}</p>
                 </div>
                 <div class="flex items-center mb-3 gap-2">
                     <i class="pi pi-users text-sky-400"></i>
                     <p class="text-gray-500">8 spaces available</p>
                 </div>
-                <a routerLink="/single-event"
-                    class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
-                    Book
-                </a>
             </div>
-        </div>
-        <!-- Event 2 -->
-        <div
-            class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <a href="#">
-                <img class="rounded-t-lg w-full h-64 object-cover" src="showcase.avif" alt="Event 2" />
-            </a>
-            <div class="p-4">
-                <a href="#">
-                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">CAN Info Tech</h5>
-                </a>
-                <div class="flex items-center mb-3 gap-2">
-                    <i class="pi pi-home text-sky-400"></i>
-                    <p class="font-semibold text-gray-700 dark:text-gray-400">Sarit center</p>
-                </div>
-                <div class="flex items-center mb-3 gap-2">
-                    <i class="pi pi-calendar text-sky-400"></i>
-                    <p class="text-gray-500">25th August, 2024</p>
-                </div>
-                <div class="flex items-center mb-3 gap-2">
-                    <i class="pi pi-users text-sky-400"></i>
-                    <p class="text-gray-500">24 spaces available</p>
-                </div>
-                <a routerLink="/single-event"
-                    class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
-                    Book
-                </a>
-            </div>
-        </div>
-        <!-- Event 3 -->
-        <div
-            class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-            <a href="#">
-                <img class="rounded-t-lg w-full h-64 object-cover" src="showcase.avif" alt="Event 3" />
-            </a>
-            <div class="p-4">
-                <a href="#">
-                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Event 3</h5>
-                </a>
-                <div class="flex items-center mb-3 gap-2">
-                    <i class="pi pi-home text-sky-400"></i>
-                    <p class="font-semibold text-gray-700 dark:text-gray-400">Sarit center</p>
-                </div>
-                <div class="flex items-center mb-3 gap-2">
-                    <i class="pi pi-calendar text-sky-400"></i>
-                    <p class="text-gray-500">25th August, 2024</p>
-                </div>
-                <div class="flex items-center mb-3 gap-2">
-                    <i class="pi pi-users text-sky-400"></i>
-                    <p class="text-gray-500">24 spaces available</p>
-                </div>
-                <a routerLink="/single-event"
-                    class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
+            <div class="p-2 flex justify-center">
+                <a (click)="getSingleEvent(event.id)"
+                    class="inline-flex items-center justify-center w-60 px-3 py-2 text-xs font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-500 dark:hover:bg-purple-600 dark:focus:ring-purple-800">
                     Book
                 </a>
             </div>

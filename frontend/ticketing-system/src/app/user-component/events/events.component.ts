@@ -7,7 +7,9 @@ import {
 } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Event } from '../../interfaces/events';
+import { EventsService } from '../../services/events.service';
 
 @Component({
   selector: 'app-events',
@@ -18,7 +20,32 @@ import { RouterLink } from '@angular/router';
 })
 export class EventsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('slideContainer') slideContainer!: ElementRef;
+  events: Event[] = [];
 
+  constructor(
+    private eventsService: EventsService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.getAllEvents();
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id) {
+        this.getSingleEvent(id);
+      }
+    });
+  }
+
+  getSingleEvent(id: string): void {
+    this.eventsService.getSingleEvent(id).subscribe((res) => {
+      this.router.navigate(['/single-event', res.data.id]);
+    });
+  }
+  getAllEvents(): void {
+    this.eventsService.getEvents().subscribe((res) => {
+      this.events = res.data;
+    });
+  }
   slides = [
     { image: 'Happy-country-1200X300--2.avif' },
     { image: 'showcase.avif' },

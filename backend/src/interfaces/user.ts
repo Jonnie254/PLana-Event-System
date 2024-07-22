@@ -1,4 +1,5 @@
 import { Booking } from "./Booking";
+import { ChatRoom } from "./chats";
 import { RoleRequest } from "./RoleRequest";
 
 export interface userLogins {
@@ -11,7 +12,17 @@ export interface userRegister {
   password: string;
   email: string;
   phone: string;
+  profileImage?: string;
 }
+export interface userUpdate {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  profileImage?: string;
+  password?: string;
+}
+
 export interface User {
   id: string;
   firstname: string;
@@ -20,6 +31,7 @@ export interface User {
   email: string;
   phone: string;
   role: string;
+  profileImage?: string;
   isActive: boolean;
   createdAt: Date;
   isDeleted: boolean;
@@ -28,4 +40,15 @@ export interface User {
   events?: Event[];
   bookings?: Booking[];
   roleRequests?: RoleRequest[];
+  chatRooms?: ChatRoom[];
+}
+export interface passwordReset {
+  id: string;
+  email: string;
+  password: string;
+}
+
+export interface updateRole {
+  request_id: string;
+  approve: boolean;
 }

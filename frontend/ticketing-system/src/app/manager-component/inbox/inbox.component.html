@@ -1,54 +1,63 @@
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen bg-gray-100 mt-2">
     <!-- Sidebar -->
     <aside class="w-1/4 bg-gray-200 border-r border-gray-300">
-        <!-- Chat List -->
+        <!-- Chat Rooms List -->
         <div class="p-4">
-            <h2 class="text-xl font-semibold mb-4">Chats</h2>
-            <ul class="space-y-4">
-                <!-- Replace with Angular ngFor loop for dynamic chats -->
-                <li>
-                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-300">
-                        <div class="h-10 w-10 bg-gray-400 rounded-full"></div>
+            <h2 class="text-xl font-semibold mb-4">Event Chat Room</h2>
+            <ul class="space-y-2">
+                <li *ngFor="let chatRoom of chatRooms">
+                    <a (click)="selectChatRoom(chatRoom)"
+                        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-300">
+                        <div class="h-10 w-10 bg-gray-400 rounded-full">
+                            <img [src]="chatRoom.event.image" alt="" class=" h-10 w-10 rounded-full">
+                        </div>
                         <div>
-                            <div class="font-semibold">John Doe</div>
-                            <div class="text-sm text-gray-600">Last message...</div>
+                            <div class="font-semibold">{{ chatRoom.event.name }}</div>
+                            <div class="text-sm text-gray-600">
+                                {{ chatRoom.latestMessage?.message || 'No messages' }}
+                            </div>
                         </div>
                     </a>
                 </li>
-                <!-- Add more chat contacts as needed -->
             </ul>
         </div>
     </aside>
-
     <!-- Main Content: Chat Window and Input -->
     <main class="flex-1 flex flex-col">
         <!-- Chat Header -->
         <header class="p-4 bg-white border-b border-gray-300">
             <div class="flex items-center space-x-2">
-                <div class="h-10 w-10 bg-gray-400 rounded-full"></div>
+                <div class="h-10 w-10 bg-gray-400 rounded-full">
+                    <img [src]="selectedChatRoom?.event?.image" alt="" class="rounded-full h-10 w-10">
+                </div>
                 <div>
-                    <div class="font-semibold">John Doe</div>
-                    <div class="text-sm text-gray-600">Online</div>
+                    <div class="font-semibold">{{ selectedChatRoom?.event?.name || 'Select a room' }}</div>
+                    <div class="text-sm text-gray-600">{{ selectedChatRoom ? 'Online' : '' }}</div>
                 </div>
             </div>
         </header>
 
         <!-- Chat Messages -->
-        <div class="flex-1 p-4 overflow-y-auto">
-            <!-- Replace with Angular ngFor loop for dynamic messages -->
-            <div class="flex items-start mb-4">
-                <div class="h-8 w-8 bg-gray-400 rounded-full"></div>
+        <div class="flex-1 p-4 overflow-y-auto" #messagesContainer>
+            <div *ngFor="let message of messages" class="flex items-start mb-4">
+                <div class="h-8 w-8 bg-gray-400 rounded-full">
+                    <img src="{{message.sender?.profileImage || 'profilepic.svg'}}" alt="">
+                </div>
                 <div class="ml-2 p-2 bg-blue-200 rounded-lg">
-                    <p class="text-sm">Hello!</p>
+                    <p class="text-sm">
+                        <strong>{{ message.sender?.email || 'Unknown' }}:</strong> {{ message.message || 'No message' }}
+                    </p>
+                    <p class="text-xs text-gray-500">{{ message.createdAt | date: 'mediumTime' }}</p>
                 </div>
             </div>
-            <!-- Repeat for each message -->
         </div>
 
         <!-- Message Input -->
         <div class="border-t flex items-center p-2">
-            <input type="text" placeholder="Type a message..." class="flex-1 p-2 rounded-full border outline-none">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full ml-2">Send</button>
+            <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..."
+                class="flex-1 p-2 rounded-full border outline-none" [disabled]="!selectedChatRoom">
+            <button (click)="sendMessage()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full ml-2"
+                [disabled]="!selectedChatRoom">Send</button>
         </div>
     </main>
 </div>

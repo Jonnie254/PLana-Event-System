@@ -48,6 +48,7 @@ export class ProfileComponent {
       profileImage: [''],
     });
 
+    // Subscribe to current user data
     this.manageUserService.currentUser$.subscribe((user) => {
       if (user) {
         this.user = user;
@@ -65,6 +66,7 @@ export class ProfileComponent {
   get f() {
     return this.updateForm.controls;
   }
+
   imageurl: string = '';
   getImagesUrl(event: any) {
     const file = event.target.files[0];
@@ -85,9 +87,7 @@ export class ProfileComponent {
         .then((result) => {
           this.imageurl = result.url;
           this.updateForm.patchValue({ profileImage: this.imageurl });
-          setTimeout(() => {
-            this.hideSpinner();
-          }, 2000);
+          this.hideSpinner();
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -95,6 +95,7 @@ export class ProfileComponent {
         });
     }
   }
+
   showSpinner() {
     this.spinnerVisible = true;
   }
@@ -107,23 +108,31 @@ export class ProfileComponent {
     this.isEditMode = !this.isEditMode;
     this.buttonText = this.isEditMode ? 'Save' : 'Edit';
   }
+
   onFileSelected(event: any) {
     if (this.isEditMode) {
       this.selectedFile = event.target.files[0];
     }
   }
+
   onSave() {
     if (this.updateForm.invalid) {
       return;
     }
+
     const updateFormData = this.updateForm.value;
     this.userService.updateUser(updateFormData).subscribe({
       next: (response: Res) => {
         if (response.success) {
           this.loginSuccess = true;
           this.loginMessage = response.message;
-          this.manageUserService.setCurrentUser(updateFormData);
 
+          // Update the user in the service
+          this.manageUserService.setCurrentUser({
+            ...this.user,
+            ...updateFormData,
+          });
+          this.updateForm.patchValue(updateFormData);
           setTimeout(() => {
             this.loginSuccess = false;
             this.loginMessage = '';

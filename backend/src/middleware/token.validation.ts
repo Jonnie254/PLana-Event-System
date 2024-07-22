@@ -1,6 +1,8 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 export const verifyToken = (
   req: Request,
   res: Response,
@@ -152,5 +154,38 @@ export const verifyPlannerOrAdmin = (
     return res
       .status(400)
       .json({ success: false, message: "Invalid token", data: null });
+  }
+};
+export const verifyResetTokenMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { code } = req.body;
+
+  try {
+    const resetRecord = await prisma.passwordReset.findUnique({
+      where: { code },
+      include: { user: true },
+    });
+
+    if (!resetRecord || new Date() > resetRecord.ExpiresAt) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired reset token",
+        data: null,
+      });
+    }
+    req.body.email = resetRecord.user.email;
+    next();
+  } catch (error: any) {
+    console.error("Error verifying reset token:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while verifying reset token",
+      data: null,
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 };
