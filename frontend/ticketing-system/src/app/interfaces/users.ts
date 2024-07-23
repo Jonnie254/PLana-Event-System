@@ -36,3 +36,10 @@ export interface User {
   updatedAt: Date;
   chatMessages: ChatMessage[];
 }
+
+export interface Role {
+  id: string;
+  approved: boolean;
+  userId: string;
+  user: User;
+}

@@ -55,4 +55,14 @@ export class EventsService {
       },
     });
   }
+  getEventsWithOrganizers(): Observable<Res> {
+    return this.http.get<Res>(
+      `${this.baseUrl}/event/getAllEventsWithOrganizers`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    );
+  }
 }

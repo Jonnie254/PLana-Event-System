@@ -239,6 +239,29 @@ export const getEventsUpcoming = async (req: Request, res: Response) => {
     });
   }
 };
+//function to get all events with there organizers
+export const getEventsWithOrganizers = async (req: Request, res: Response) => {
+  try {
+    const response: Res = await eventService.getAllEventsWithOrganizers();
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error fetching promotion requests:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching promotion requests",
+      data: null,
+    });
+  }
+};
+export const protectedEventsWithOrganizers = [
+  verifyToken,
+  verifyAdmin,
+  getEventsWithOrganizers,
+];
 export const protectedGetEventsUpcoming = [verifyToken, getEventsUpcoming];
 export const protectedgetPromotionRequests = [
   verifyToken,

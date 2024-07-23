@@ -61,4 +61,13 @@ export class UserService {
       },
     });
   }
+  //function to get the role requests
+  getRoleRequests(): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.get<Res>(`${this.baseUrl}/user/allRoleRequest`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 }

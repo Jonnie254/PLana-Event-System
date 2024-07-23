@@ -12,9 +12,8 @@ import {
 import { Res } from "../interfaces/Res";
 import { requestRoleSchema, userSchema } from "../middleware/validate.inputs";
 
-let prisma = new PrismaClient();
-
 export class UserService {
+  prisma = new PrismaClient();
   // Function to register a user
   async registerUser(user: userRegister): Promise<Res> {
     try {
@@ -29,7 +28,7 @@ export class UserService {
       const user_id = uuidv4();
       const hashedPassword = await bcrypt.hash(user.password, 6);
 
-      await prisma.user.create({
+      await this.prisma.user.create({
         data: {
           id: user_id,
           firstname: user.first_name,
@@ -63,13 +62,13 @@ export class UserService {
         };
       }
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to get all users
   async getAllUsers() {
     try {
-      let users = await prisma.user.findMany();
+      let users = await this.prisma.user.findMany();
       return {
         success: true,
         message: "Users fetched successfully",
@@ -83,13 +82,13 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to get a user by ID
   async getUserById(user_id: string) {
     try {
-      let user = await prisma.user.findUnique({
+      let user = await this.prisma.user.findUnique({
         where: {
           id: user_id,
         },
@@ -107,7 +106,7 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to update a user
@@ -116,7 +115,7 @@ export class UserService {
       const hashedPassword = user.password
         ? await bcrypt.hash(user.password, 6)
         : undefined;
-      await prisma.user.update({
+      await this.prisma.user.update({
         where: {
           id: user_id,
         },
@@ -142,14 +141,14 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 
   //user deactive account
   async deactivateAccount(user_id: string) {
     try {
-      await prisma.user.update({
+      await this.prisma.user.update({
         where: {
           id: user_id,
         },
@@ -170,14 +169,14 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 
   // Function to request a role change
   async requestRoleChange(user_id: string, role: string) {
     try {
-      const user = await prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { id: user_id },
       });
 
@@ -189,7 +188,7 @@ export class UserService {
         };
       }
 
-      const newRoleRequest = await prisma.roleRequest.create({
+      const newRoleRequest = await this.prisma.roleRequest.create({
         data: {
           id: uuidv4(),
           user: { connect: { id: user_id } },
@@ -197,10 +196,7 @@ export class UserService {
         },
       });
 
-      await sendRoleRequestEmail(
-        { email: user.email, name: user.firstname },
-        role
-      );
+      sendRoleRequestEmail({ email: user.email, name: user.firstname }, role);
 
       return {
         success: true,
@@ -216,13 +212,13 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to check if a role change request exists
   async checkRoleRequest(user_id: string) {
     try {
-      const roleRequest = await prisma.roleRequest.findFirst({
+      const roleRequest = await this.prisma.roleRequest.findFirst({
         where: { userId: user_id },
       });
 
@@ -247,14 +243,14 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 
   // Function to approve a role change
   async approveRoleChangeRequest({ request_id, approve }: updateRole) {
     try {
-      const roleRequest = await prisma.roleRequest.findUnique({
+      const roleRequest = await this.prisma.roleRequest.findUnique({
         where: { id: request_id },
         include: { user: true },
       });
@@ -268,13 +264,13 @@ export class UserService {
       }
 
       if (approve) {
-        await prisma.user.update({
+        await this.prisma.user.update({
           where: { id: roleRequest.userId },
           data: { role: roleRequest.requestedRole },
         });
 
         try {
-          await sendRoleApprovalEmail(
+          sendRoleApprovalEmail(
             roleRequest.user.email,
             roleRequest.requestedRole
           );
@@ -283,7 +279,7 @@ export class UserService {
           // Continue despite the email failure
         }
 
-        await prisma.roleRequest.delete({
+        await this.prisma.roleRequest.delete({
           where: { id: request_id },
         });
 
@@ -293,7 +289,7 @@ export class UserService {
           data: null,
         };
       } else {
-        await prisma.roleRequest.delete({
+        await this.prisma.roleRequest.delete({
           where: { id: request_id },
         });
 
@@ -312,7 +308,7 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   /// request password reset
@@ -321,7 +317,7 @@ export class UserService {
   }
   async requestPasswordReset(email: string) {
     try {
-      const user = await prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { email },
       });
       if (!user) {
@@ -333,7 +329,7 @@ export class UserService {
       }
       const resetCode = this.generaterandomCode();
       const expireat = new Date(Date.now() + 3600 * 1000);
-      await prisma.passwordReset.create({
+      await this.prisma.passwordReset.create({
         data: {
           id: uuidv4(),
           email,
@@ -356,7 +352,7 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 
@@ -372,7 +368,7 @@ export class UserService {
         };
       }
       const hashedPassword = await bcrypt.hash(password, 6);
-      await prisma.user.update({
+      await this.prisma.user.update({
         where: {
           email: email,
         },
@@ -394,34 +390,48 @@ export class UserService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   };
   //get All role request
   async getAllRoleRequest() {
     try {
-      let roleRequest = await prisma.roleRequest.findMany();
+      const roleRequests = await this.prisma.roleRequest.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstname: true,
+              lastname: true,
+              profileImage: true,
+              role: true,
+            },
+          },
+        },
+      });
+
       return {
         success: true,
-        message: "Role request fetched successfully",
-        data: roleRequest,
+        message: "Role requests fetched successfully",
+        data: roleRequests,
       };
     } catch (error: any) {
-      console.error("Error fetching role request:", error);
+      console.error("Error fetching role requests:", error);
       return {
         success: false,
-        message: "An error occurred while fetching role request",
+        message: "An error occurred while fetching role requests",
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to get chat rooms for a user
   async getUserChatRooms(userId: string) {
     try {
       // Fetch chat rooms where the user is a participant
-      const chatRooms = await prisma.chatRoom.findMany({
+      const chatRooms = await this.prisma.chatRoom.findMany({
         where: {
           users: {
             some: {

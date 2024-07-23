@@ -9,6 +9,7 @@ import {
   protectedapprovedEventPromotion,
   getApprovedPromotions,
   protectedGetEventsUpcoming,
+  protectedEventsWithOrganizers,
 } from "../controller/event.controller";
 
 let eventRouter = Router();
@@ -22,4 +23,5 @@ eventRouter.post("/approvepromotion/:id", protectedapprovedEventPromotion);
 eventRouter.get("/upcomingEvents", protectedGetEventsUpcoming);
 eventRouter.get("/promotions", getApprovedPromotions);
 eventRouter.get("/getApprovedPromotion", getApprovedPromotions);
+eventRouter.get("/getAllEventsWithOrganizers", protectedEventsWithOrganizers);
 export default eventRouter;

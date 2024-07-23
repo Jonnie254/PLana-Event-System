@@ -4,8 +4,8 @@ import bcrypt from "bcrypt";
 import { userLogins } from "../interfaces/user";
 import { Res } from "../interfaces/Res";
 import { loginSchema } from "../middleware/validate.inputs";
-let prisma = new PrismaClient();
 export class AuthService {
+  prisma = new PrismaClient();
   async login(userDetails: userLogins): Promise<Res> {
     try {
       const { error } = loginSchema.validate(userDetails);
@@ -16,7 +16,7 @@ export class AuthService {
           data: null,
         };
       }
-      const user = await prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: {
           email: userDetails.email,
           isActive: true,
@@ -68,7 +68,7 @@ export class AuthService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 }

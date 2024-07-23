@@ -27,7 +27,7 @@ export class RequestFormComponent {
   constructor(private fb: FormBuilder, private userService: UserService) {
     // Initialize form with role fixed as 'Event Planner' and disabled
     this.requestRoleForm = this.fb.group({
-      role: [{ value: 'Event Planner', disabled: true }, Validators.required],
+      role: [{ value: 'planner', disabled: true }, Validators.required],
     });
     this.userService.checkRoleRequest().subscribe(
       (response: Res) => {

@@ -507,4 +507,35 @@ export class EventService {
       await prisma.$disconnect();
     }
   }
+  //get all the events with there organizers
+  async getAllEventsWithOrganizers(): Promise<Res> {
+    try {
+      const events = await prisma.event.findMany({
+        where: { isDeleted: false },
+        include: {
+          createdBy: {
+            select: {
+              email: true,
+            },
+          },
+          singleTickets: true,
+          groupTickets: true,
+        },
+      });
+      return {
+        message: "Events with organizers retrieved successfully",
+        success: true,
+        data: events,
+      };
+    } catch (error: any) {
+      console.error("Error getting events with organizers:", error);
+      return {
+        success: false,
+        message: "An error occurred while getting events with organizers",
+        data: null,
+      };
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 }

@@ -7,7 +7,7 @@
     "start:build": "tsc -watch",
     "start:dev": "nodemon dist/server.js",
     "start": "concurrently npm:start:*",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watch"
   },
   "author": "jonnie-254",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "@types/cron": "^2.4.0",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.15",
@@ -33,6 +34,7 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "from": "^0.1.7",
+    "jest": "^29.7.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "node-cron": "^3.0.3",
@@ -41,6 +43,7 @@
     "path": "^0.12.7",
     "qrcode": "^1.5.3",
     "socket.io": "^4.7.5",
+    "ts-jest": "^29.2.3",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

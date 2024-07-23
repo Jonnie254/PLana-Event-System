@@ -1,73 +1,70 @@
-<div class="bg-slate-50">
+<div class="bg-slate-50 mt-2">
+    <!-- Event Details Overlay -->
+    <div *ngIf="selectedEvent" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full m-4">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h5 class="text-2xl font-bold text-gray-900">{{ selectedEvent.name }}</h5>
+                <button (click)="closeEventDetails()" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4">
+                <img [src]="selectedEvent.image" [alt]="selectedEvent.name"
+                    class="w-full h-48 object-cover mb-4 rounded-t-lg">
+                <p class="mb-3 text-gray-700 font-medium"><span class="font-bold">INFO: </span>{{
+                    selectedEvent.description }}</p>
+                <p class="mb-3 text-gray-700 font-medium">Location: {{ selectedEvent.location }}</p>
+                <p class="mb-3 text-gray-700 font-medium">Date: {{ selectedEvent.date | date: 'mediumDate' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between p-4 bg-white">
+        <h1 class="text-2xl font-semibold text-gray-800">Manage All Events</h1>
+    </div>
     <div class="font-sans overflow-x-auto">
         <table class="min-w-full bg-white">
-            <thead class="bg-gray-100 whitespace-nowrap">
+            <thead class="bg-gray-800 whitespace-nowrap">
                 <tr>
-                    <th class="p-4 text-left text-xs font-semibold text-gray-800">
-                        Event Name
-                    </th>
-                    <th class="p-4 text-left text-xs font-semibold text-gray-800">
-                        Planner Email
-                    </th>
-                    <th class="p-4 text-left text-xs font-semibold text-gray-800">
-                        Event Image
-                    </th>
-                    <th class="p-4 text-left text-xs font-semibold text-gray-800">
-                        Created At
-                    </th>
-                    <th class="p-4 text-left text-xs font-semibold text-gray-800">
-                        Actions
-                    </th>
+                    <th class="p-4 text-left text-xs font-semibold text-white">#</th>
+                    <th class="p-4 text-left text-xs font-semibold text-white">Event Name</th>
+                    <th class="p-4 text-left text-xs font-semibold text-white">Location</th>
+                    <th class="p-4 text-left text-xs font-semibold text-white">Event Image</th>
+                    <th class="p-4 text-left text-xs font-semibold text-white">Created At</th>
+                    <th class="p-4 text-left text-xs font-semibold text-white">Planner</th>
                 </tr>
             </thead>
-
             <tbody class="whitespace-nowrap">
-                <tr class="hover:bg-gray-50">
-                    <td class="p-4 text-[15px] text-gray-800">
-                        John Doe
+                <tr class="hover:bg-gray-50" *ngFor="let event of paginatedEvents; let i = index">
+                    <td class="p-4 text-[15px] text-gray-800">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                    <td class="p-4 text-[15px] text-gray-800 cursor-pointer hover:text-blue-500 hover:underline"
+                        (click)="showEventDetails(event)">{{ event.name }}</td>
+                    <td class="p-4 text-[15px] text-gray-800">{{ event.location }}</td>
+                    <td class="p-4 w-7 h-7 rounded-full shrink-0">
+                        <img [src]="event.image" alt="Event Image" class="w-10 h-10 rounded-full">
                     </td>
-                    <td class="p-4 text-[15px] text-gray-800">
-                        john.com
-                    </td>
-                    <td class="p-4 text-[15px] text-gray-800">
-                        Admin
-                    </td>
-                    <td class="p-4 text-[15px] text-gray-800">
-                        2022-05-15
-                    </td>
-                    <td class="p-4">
-                        <button class="mr-4" title="Edit">
-                            <i class="pi pi-pen-to-square w-5 text-xl text-blue-500 hover:text-blue-700"></i>
-                        </button>
-                        <button class="mr-4" title="Delete">
-                            <i class="pi pi-trash w-5 text-red-500 text-xl hover:text-red-700"></i>
-                        </button>
-                    </td>
+                    <td class="p-4 text-[15px] text-gray-800">{{ event.createdAt | date: 'mediumDate' }}</td>
+                    <td class="p-4 text-[15px] text-gray-800">{{ event.createdBy.email }}</td>
                 </tr>
             </tbody>
         </table>
-        <ul class="flex space-x-4 justify-center">
-            <li class="flex items-center justify-center shrink-0 bg-gray-300 w-10 h-10 rounded-full">
+        <ul class="flex space-x-4 justify-center mb-2">
+            <li class="flex items-center justify-center shrink-0 bg-gray-300 w-8 h-8 rounded-full cursor-pointer"
+                (click)="goToPreviousPage()">
                 <i class="pi pi-angle-left w-5 text-xl text-gray-800"></i>
             </li>
-            <li
-                class="flex items-center justify-center shrink-0 bg-blue-500  border-2 border-blue-500 cursor-pointer text-base font-bold text-white w-10 h-10 rounded-full">
-                1
+            <li *ngFor="let page of [].constructor(totalPages()); let i = index"
+                class="flex items-center justify-center shrink-0 border-2 cursor-pointer text-base font-bold w-8 h-8 rounded-full"
+                [ngClass]="{'bg-blue-500 text-white border-blue-500': currentPage === (i + 1), 'hover:bg-gray-50 text-[#333]': currentPage !== (i + 1)}"
+                (click)="goToPage(i + 1)">
+                {{ i + 1 }}
             </li>
-            <li
-                class="flex items-center justify-center shrink-0 hover:bg-gray-50  border-2 cursor-pointer text-base font-bold text-[#333] w-10 h-10 rounded-full">
-                2
-            </li>
-            <li
-                class="flex items-center justify-center shrink-0 hover:bg-gray-50  border-2 cursor-pointer text-base font-bold text-[#333] w-10 h-10 rounded-full">
-                3
-            </li>
-            <li
-                class="flex items-center justify-center shrink-0 hover:bg-gray-50  border-2 cursor-pointer text-base font-bold text-[#333] w-10 h-10 rounded-full">
-                4
-            </li>
-            <li
-                class="flex items-center justify-center shrink-0 hover:bg-gray-50 border-2 cursor-pointer w-10 h-10 rounded-full">
+            <li class="flex items-center justify-center shrink-0 bg-gray-300 w-8 h-8 rounded-full cursor-pointer"
+                (click)="goToNextPage()">
                 <i class="pi pi-angle-right w-5 text-xl text-gray-800"></i>
             </li>
         </ul>

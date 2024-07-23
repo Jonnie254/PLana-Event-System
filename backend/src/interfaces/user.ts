@@ -7,6 +7,7 @@ export interface userLogins {
   password: string;
 }
 export interface userRegister {
+  id?: string;
   first_name: string;
   last_name: string;
   password: string;

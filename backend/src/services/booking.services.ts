@@ -221,7 +221,7 @@ export class BookingService {
       } else {
         // Send email to the main user if it's a single ticket or no group emails
         try {
-          await sendBookingEmail(bookingRecord);
+          sendBookingEmail(bookingRecord);
         } catch (error) {
           console.error("Error sending booking email:", error);
           return {

@@ -25,6 +25,8 @@ export interface Event {
   createdById: string;
   groupTickets: GroupTicket[];
   singleTickets: SingleTicket[];
+  createdAt: Date;
+  createdBy: User;
 }
 export interface GroupTicketMember {
   id: string;
