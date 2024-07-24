@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { userRegister } from '../interfaces/users';
+import { passwordReset, userRegister } from '../interfaces/users';
 import { Observable } from 'rxjs';
 import { Res } from '../interfaces/res';
 
@@ -68,6 +68,44 @@ export class UserService {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    });
+  }
+  deleteRoleRequest(request_id: string): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.put<Res>(
+      `${this.baseUrl}/user/deleteRoleRequest`,
+      { request_id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+  approveRoleChangeRequest(updateRole: {
+    request_id: string;
+    approve: boolean;
+  }): Observable<Res> {
+    return this.http.post<Res>(
+      `${this.baseUrl}/user/admin/approveRoleChangeRequest`,
+      updateRole,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    );
+  }
+
+  //function to reset password
+  requestPasswordReset(email: string): Observable<Res> {
+    return this.http.post<Res>(`${this.baseUrl}/user/requestPasswordReset`, {
+      email,
+    });
+  }
+  resetPassword(passwordinfo: passwordReset): Observable<Res> {
+    return this.http.post<Res>(`${this.baseUrl}/user/updatePassword`, {
+      passwordinfo,
     });
   }
 }

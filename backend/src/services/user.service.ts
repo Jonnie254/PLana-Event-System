@@ -250,6 +250,7 @@ export class UserService {
   // Function to approve a role change
   async approveRoleChangeRequest({ request_id, approve }: updateRole) {
     try {
+      // Fetch the role change request
       const roleRequest = await this.prisma.roleRequest.findUnique({
         where: { id: request_id },
         include: { user: true },
@@ -264,21 +265,27 @@ export class UserService {
       }
 
       if (approve) {
+        // Determine the role to assign; set to "planner" if the requested role is "planner"
+        const newRole =
+          roleRequest.requestedRole === "planner"
+            ? "planner"
+            : roleRequest.requestedRole;
+        console.log("newRole", newRole);
+        // Update the user's role
         await this.prisma.user.update({
           where: { id: roleRequest.userId },
-          data: { role: roleRequest.requestedRole },
+          data: { role: newRole },
         });
 
+        // Attempt to send role approval email
         try {
-          sendRoleApprovalEmail(
-            roleRequest.user.email,
-            roleRequest.requestedRole
-          );
+          sendRoleApprovalEmail(roleRequest.user.email, newRole);
         } catch (emailError) {
           console.error("Error sending role approval email:", emailError);
           // Continue despite the email failure
         }
 
+        // Delete the role request
         await this.prisma.roleRequest.delete({
           where: { id: request_id },
         });
@@ -289,6 +296,7 @@ export class UserService {
           data: null,
         };
       } else {
+        // Disapprove the role request
         await this.prisma.roleRequest.delete({
           where: { id: request_id },
         });
@@ -311,6 +319,7 @@ export class UserService {
       await this.prisma.$disconnect();
     }
   }
+
   /// request password reset
   generaterandomCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -323,7 +332,7 @@ export class UserService {
       if (!user) {
         return {
           success: false,
-          message: "User with this email does not exist",
+          message: "User with this details does not exist",
           data: null,
         };
       }
@@ -359,23 +368,43 @@ export class UserService {
   //function to update password
   updatePassword = async (email: string, password: string) => {
     try {
-      const { error } = requestRoleSchema.validate({ email, password });
-      if (error) {
+      // Check if email and password are provided
+      if (!email || !password) {
+        console.error("Email or password is missing");
         return {
           success: false,
-          message: `Validation error: ${error.details[0].message}`,
+          message: "Email and password are required",
           data: null,
         };
       }
+
+      // Log the password length (for debugging, remove in production)
+      console.log("Password length:", password.length);
+
+      // Ensure password is a non-empty string
+      if (typeof password !== "string" || password.length === 0) {
+        console.error("Invalid password format");
+        return {
+          success: false,
+          message: "Invalid password format",
+          data: null,
+        };
+      }
+
       const hashedPassword = await bcrypt.hash(password, 6);
-      await this.prisma.user.update({
-        where: {
-          email: email,
-        },
-        data: {
-          password: hashedPassword,
-        },
+
+      const updatedUser = await this.prisma.user.update({
+        where: { email: email },
+        data: { password: hashedPassword },
       });
+
+      if (!updatedUser) {
+        return {
+          success: false,
+          message: "User not found",
+          data: null,
+        };
+      }
 
       return {
         success: true,
@@ -386,7 +415,7 @@ export class UserService {
       console.error("Error updating password:", error);
       return {
         success: false,
-        message: "An error occurred while updating password",
+        message: error.message || "An error occurred while updating password",
         data: null,
       };
     } finally {
@@ -397,6 +426,9 @@ export class UserService {
   async getAllRoleRequest() {
     try {
       const roleRequests = await this.prisma.roleRequest.findMany({
+        where: {
+          isDeleted: false,
+        },
         include: {
           user: {
             select: {
@@ -516,4 +548,32 @@ export class UserService {
       };
     }
   }
+
+  deleteRoleRequest = async (request_id: string) => {
+    try {
+      await this.prisma.roleRequest.update({
+        where: {
+          id: request_id,
+        },
+        data: {
+          isDeleted: true,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Role request deleted successfully",
+        data: null,
+      };
+    } catch (error: any) {
+      console.error("Error deleting role request:", error);
+      return {
+        success: false,
+        message: "An error occurred while deleting role request",
+        data: null,
+      };
+    } finally {
+      await this.prisma.$disconnect();
+    }
+  };
 }

@@ -43,3 +43,8 @@ export interface Role {
   userId: string;
   user: User;
 }
+export interface passwordReset {
+  email?: string;
+  resetCode?: string;
+  newPassword?: string;
+}

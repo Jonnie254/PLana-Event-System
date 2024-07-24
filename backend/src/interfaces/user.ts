@@ -44,9 +44,10 @@ export interface User {
   chatRooms?: ChatRoom[];
 }
 export interface passwordReset {
-  id: string;
-  email: string;
-  password: string;
+  id?: string;
+  email?: string;
+  resetCode?: string;
+  password?: string;
 }
 
 export interface updateRole {

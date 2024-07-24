@@ -1,18 +1,85 @@
 <app-navbar></app-navbar>
-<div class="slideshow-container">
-    <div *ngFor="let slide of slides; let i = index" class="mySlides">
-        <img [src]="slide.image" [alt]="'Slide ' + (i + 1)">
+
+<!-- Banner Section -->
+<div class="max-w-full mx-auto bg-teal-300 shadow-2xl overflow-hidden">
+    <div class=" py-4 px-6">
+        <h2 class="text-2xl font-bold text-slate-800">Promoted Events</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8 p-8">
+        <!-- Image Section -->
+        <div class="relative group">
+            <img [src]="currentPromotion?.event?.image" [alt]="'Promotion ' + (currentIndex + 1)"
+                class="w-full h-96 object-cover rounded-lg shadow-md transition duration-300 group-hover:opacity-75" />
+            <div
+                class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                <div class="text-center p-6">
+                    <h3 class="font-bold text-4xl text-white mb-2">{{currentPromotion?.event?.name}}</h3>
+                    <h6 class="text-2xl text-orange-300 mb-2">{{currentPromotion?.event?.location}}</h6>
+                    <p class="text-gray-200 text-lg mb-4">{{currentPromotion?.event?.date}}</p>
+                    <button type="button"
+                        class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                        Book Now
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Additional Information Section -->
+        <div class="flex flex-col items-center justify-center text-center space-y-6">
+            <p class="text-gray-700 text-xl">Discover more about this event andsecure your spot today!</p>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="text-lg text-gray-600">Limited time offer</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="text-lg text-gray-600">Prime location</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-lg text-gray-600">Best value tickets</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+        <button onclick="prevSlide()"
+            class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md transition duration-300">
+            <i class="pi pi-angle-left"></i>
+        </button>
+    </div>
+    <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
+        <button onclick="nextSlide()"
+            class=" bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded-full shadow-md transition duration-300">
+            <i class="pi pi-angle-right"></i>
+        </button>
     </div>
 </div>
-<div class="dot-container">
-    <span *ngFor="let slide of slides; let i = index" class="dot" [ngClass]="{'active': i === slideIndex}"
-        (click)="currentSlide(i)"></span>
-</div>
-<section class="mt-2">
-    <div class="flex justify-center w-full items-center mb-4">
+
+
+<!-- Upcoming Events Section -->
+<section class="bg-green-50 mt-2">
+    <div class="flex justify-center w-full items-center mb-4 mt-2">
         <h1 class="text-center text-3xl font-semibold w-96">Upcoming Events</h1>
-        <div class="flex items-center relative ml-4">
-            <input type="text" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+        <div class="flex items-center relative ml-4 mt-2">
+            <input type="text" [(ngModel)]="searchTerm"
+                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                 placeholder="Search..." />
             <button class="absolute right-0 inset-y-0 flex items-center pr-3">
                 <i class="pi pi-search"></i>
@@ -20,8 +87,8 @@
         </div>
     </div>
     <div class="grid grid-cols-1 gap-6 px-4 py-8 mx-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-screen-xl">
-        <div *ngFor="let event of events"
-            class="flex flex-col  cursor-pointer justify-between max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
+        <div *ngFor="let event of events | search: searchTerm"
+            class="flex flex-col cursor-pointer justify-between max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
             <a>
                 <img *ngIf="event.image" class="rounded-t-lg w-full max-h-48 object-cover" [src]="event.image"
                     alt="Event 1" />

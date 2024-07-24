@@ -47,6 +47,7 @@ model RoleRequest {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   approved      Boolean  @default(false)
+  isDeleted     Boolean  @default(false)
 
   @@map("role_requests")
 }

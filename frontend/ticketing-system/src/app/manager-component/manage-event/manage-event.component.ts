@@ -20,6 +20,7 @@ import { Res } from '../../interfaces/res';
   styleUrl: './manage-event.component.css',
 })
 export class ManageEventComponent {
+  currentDate: string = '';
   events: Event[] = [];
   event: Event = {} as Event;
   eventForm: FormGroup = new FormGroup({});
@@ -34,8 +35,11 @@ export class ManageEventComponent {
   eventMessage: string = '';
   singleTicketId: string | null = null;
   groupTicketId: string | null = null;
+  confirmationModal: boolean = false;
+  selectedEventId: string = '';
 
   constructor(private fb: FormBuilder, private eventsService: EventsService) {
+    this.currentDate = this.getCurrentDate(); // Set current date
     this.getEvents();
     this.eventForm = this.fb.group({
       name: ['', Validators.required],
@@ -82,6 +86,15 @@ export class ManageEventComponent {
         this.removeGroupTicket();
       }
     });
+  }
+  //get the current date
+  // Helper function to get the current date in yyyy-mm-dd format
+  getCurrentDate(): string {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
   }
   //get all the events
   getEvents() {
@@ -383,5 +396,24 @@ export class ManageEventComponent {
         console.error('Error fetching event:', error);
       },
     });
+  }
+  requestPromotion(eventId: string) {
+    console.log('Requesting promotion for event:', eventId);
+    this.eventsService.requestEventPromotion(eventId).subscribe({
+      next: (response: Res) => {
+        this.closeModal();
+        console.log('Promotion request:', response);
+      },
+      error: (error) => {
+        console.error('Error requesting promotion:', error);
+      },
+    });
+  }
+  closeModal() {
+    this.confirmationModal = false;
+  }
+  showConfirmationModal(eventId: string) {
+    this.selectedEventId = eventId;
+    this.confirmationModal = true;
   }
 }

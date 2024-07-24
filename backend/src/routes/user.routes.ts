@@ -4,6 +4,7 @@ import {
   protectedApproveRoleChangeRequest,
   protectedChatRoom,
   protectedDeactivateAccount,
+  protectedDeleteRoleRequest,
   protectedGetUserById,
   protectedRequestRoleChange,
   protectedRoleExists,
@@ -30,5 +31,6 @@ userRouter.post("/updatePassword", updateUserPassword);
 userRouter.get("/allRoleRequest", protectedroleRequests);
 userRouter.get("/checkRoleRequest", protectedRoleExists);
 userRouter.get("/getChatRooms", protectedChatRoom);
+userRouter.put("/deleteRoleRequest", protectedDeleteRoleRequest);
 // userRouter.get("/getUserMessages", protectedGetUserMessages);
 export default userRouter;

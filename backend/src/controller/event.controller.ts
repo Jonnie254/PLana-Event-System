@@ -136,7 +136,7 @@ export const updateEvent = async (req: Request, res: Response) => {
   }
 };
 //function to request event promotion
-export const requestEventPromotion = async (req: Request, res: Response) => {
+export const requestEventPromotions = async (req: Request, res: Response) => {
   const event_id = req.params.id;
   const user_id = getIdFromToken(req);
   try {
@@ -164,11 +164,9 @@ export const approveEventPromotionById = async (
   res: Response
 ) => {
   const promotion_id = req.params.id;
-  const isApproved = req.body.isApproved;
   try {
     const response: Res = await eventService.approveEventPromotionById(
-      promotion_id,
-      isApproved
+      promotion_id
     );
     if (response.success) {
       res.status(200).json(response);
@@ -276,7 +274,7 @@ export const protectedapprovedEventPromotion = [
 export const protectedRequestEventPromotion = [
   verifyToken,
   verifyPlanner,
-  requestEventPromotion,
+  requestEventPromotions,
 ];
 export const protectedUpdateEvent = [
   verifyToken,

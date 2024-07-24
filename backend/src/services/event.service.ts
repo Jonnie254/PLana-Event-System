@@ -3,10 +3,10 @@ import { Event } from "../interfaces/Event";
 import { Res } from "../interfaces/Res";
 import { v4 as uuidv4 } from "uuid";
 
-const prisma = new PrismaClient();
-
 export class EventService {
+  prisma = new PrismaClient();
   // Function to create an event
+
   async createEvent(newEvent: Event): Promise<Res> {
     try {
       const {
@@ -61,7 +61,7 @@ export class EventService {
         };
       }
 
-      const event = await prisma.event.create({
+      const event = await this.prisma.event.create({
         data: eventData,
         include: {
           singleTickets: true,
@@ -82,13 +82,13 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to get all events
   async getAllEvents(): Promise<Res> {
     try {
-      const events = await prisma.event.findMany({
+      const events = await this.prisma.event.findMany({
         where: {
           isDeleted: false,
         },
@@ -111,13 +111,13 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   // Function to get an event by ID
   async getEventById(event_id: string): Promise<Res> {
     try {
-      const event = await prisma.event.findUnique({
+      const event = await this.prisma.event.findUnique({
         where: {
           id: event_id,
         },
@@ -140,13 +140,13 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   //function to get event by specific planner
   async getEventByPlanner(planner_id: string): Promise<Res> {
     try {
-      const events = await prisma.event.findMany({
+      const events = await this.prisma.event.findMany({
         where: {
           createdById: planner_id,
         },
@@ -169,7 +169,7 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   async updateEvent(
@@ -203,7 +203,7 @@ export class EventService {
       }
 
       // Fetch the current event data
-      const currentEvent = await prisma.event.findUnique({
+      const currentEvent = await this.prisma.event.findUnique({
         where: { id: event_id },
         include: {
           singleTickets: true,
@@ -268,7 +268,7 @@ export class EventService {
         .map((t) => t.id);
 
       // Perform the update
-      const event = await prisma.event.update({
+      const event = await this.prisma.event.update({
         where: { id: event_id },
         data: {
           ...eventData,
@@ -310,14 +310,14 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 
   //request for event promotion
   async requestEventPromotion(event_id: string, user_id: string): Promise<Res> {
     try {
-      const event = await prisma.event.findUnique({
+      const event = await this.prisma.event.findUnique({
         where: { id: event_id },
       });
 
@@ -329,7 +329,7 @@ export class EventService {
         };
       }
 
-      const newPromotionRequest = await prisma.eventPromotion.create({
+      const newPromotionRequest = await this.prisma.eventPromotion.create({
         data: {
           id: uuidv4(),
           event: { connect: { id: event_id } },
@@ -351,17 +351,14 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   //approve event promotion
-  async approveEventPromotionById(
-    promotion_id: string,
-    isApproved: boolean
-  ): Promise<Res> {
+  async approveEventPromotionById(promotion_id: string): Promise<Res> {
     try {
       // Find the event promotion record
-      const promotion = await prisma.eventPromotion.findUnique({
+      const promotion = await this.prisma.eventPromotion.findUnique({
         where: { id: promotion_id },
       });
 
@@ -373,11 +370,11 @@ export class EventService {
         };
       }
 
-      // Update the event promotion record with the approval status
-      const updatedPromotion = await prisma.eventPromotion.update({
+      // Update the event promotion record with isApproved set to true
+      const updatedPromotion = await this.prisma.eventPromotion.update({
         where: { id: promotion_id },
         data: {
-          isApproved: isApproved,
+          isApproved: true,
         },
       });
 
@@ -394,13 +391,14 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect(); // Ensure to disconnect Prisma client
+      await this.prisma.$disconnect();
     }
   }
   //get all event promotions
   async getAllEventPromotions(): Promise<Res> {
     try {
-      const promotions = await prisma.eventPromotion.findMany({
+      // Check if there are any records in the eventPromotion table
+      const promotions = await this.prisma.eventPromotion.findMany({
         include: {
           event: true,
           requestedBy: true,
@@ -414,19 +412,20 @@ export class EventService {
       };
     } catch (error: any) {
       console.error("Error getting event promotions:", error);
+
       return {
         success: false,
         message: "An error occurred while getting event promotions",
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   //get all approved event promotion for the user
   async getAllApprovedEventPromotions(): Promise<Res> {
     try {
-      const promotions = await prisma.eventPromotion.findMany({
+      const promotions = await this.prisma.eventPromotion.findMany({
         where: { isApproved: true },
         include: {
           event: true,
@@ -447,37 +446,35 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
   //get the available events for the user
   async getAvailableEvents(user_id: string): Promise<Res> {
     try {
-      const events = await prisma.event.findMany({
+      const now = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+
+      // Fetch events where the date is greater than or equal to today
+      const events = await this.prisma.event.findMany({
         where: {
-          AND: [
-            {
-              date: {
-                gte: new Date().toISOString(),
+          date: {
+            gte: now, // Use date string in ISO format
+          },
+          NOT: {
+            bookings: {
+              some: {
+                userId: user_id, // Check if the user has booked the event
               },
             },
-            {
-              NOT: {
-                bookings: {
-                  some: {
-                    id: user_id,
-                  },
-                },
-              },
-            },
-          ],
+          },
+          isDeleted: false, // Ensure event is not deleted
         },
         include: {
           singleTickets: true,
           groupTickets: true,
           bookings: {
             where: {
-              id: user_id,
+              userId: user_id,
             },
             select: {
               id: true,
@@ -486,7 +483,7 @@ export class EventService {
         },
       });
 
-      // Double-check filtering on the application level
+      // Filter events to exclude those already booked by the user
       const filteredEvents = events.filter(
         (event) => event.bookings.length === 0
       );
@@ -504,13 +501,14 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
+
   //get all the events with there organizers
   async getAllEventsWithOrganizers(): Promise<Res> {
     try {
-      const events = await prisma.event.findMany({
+      const events = await this.prisma.event.findMany({
         where: { isDeleted: false },
         include: {
           createdBy: {
@@ -535,7 +533,7 @@ export class EventService {
         data: null,
       };
     } finally {
-      await prisma.$disconnect();
+      await this.prisma.$disconnect();
     }
   }
 }

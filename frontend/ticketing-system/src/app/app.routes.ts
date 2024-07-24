@@ -19,6 +19,8 @@ import { AdminHomepageComponent } from './admin-component/admin-homepage/admin-h
 import { ManageUsersComponent } from './admin-component/manage-users/manage-users.component';
 import { RoleRequestsComponent } from './admin-component/role-requests/role-requests.component';
 import { ManageAllEventsComponent } from './admin-component/manage-all-events/manage-all-events.component';
+import { ForgotPasswordComponent } from './all-users/forgot-password/forgot-password.component';
+import { ManageAllPromotionsComponent } from './admin-component/manage-all-promotions/manage-all-promotions.component';
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   {
@@ -58,6 +60,10 @@ export const routes: Routes = [
     component: RegisterFormComponent,
   },
   {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
+  },
+  {
     path: 'admin-dashboard',
     component: AdminDashboardComponent,
     children: [
@@ -67,6 +73,7 @@ export const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
       },
+      { path: 'promotions', component: ManageAllPromotionsComponent },
       { path: 'events', component: ManageAllEventsComponent },
       { path: 'inbox', component: InboxComponent },
       { path: 'roles', component: RoleRequestsComponent },

@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
 import { PrismaClient } from "@prisma/client";
+import { passwordReset } from "../interfaces/user";
 const prisma = new PrismaClient();
 export const verifyToken = (
   req: Request,
@@ -101,7 +102,7 @@ export const verifyPlanner = (
       return res
         .status(401)
         .json({ success: false, message: "Access denied", data: null });
-    } else if (response.role && response.role === "planner") {
+    } else if (response.role && response.role === "Event Planner") {
       return next();
     } else {
       return res
@@ -156,16 +157,75 @@ export const verifyPlannerOrAdmin = (
       .json({ success: false, message: "Invalid token", data: null });
   }
 };
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Retrieve authorization header
+  const authHeader = req.headers["authorization"];
+
+  // Check if the authorization header is present
+  if (!authHeader) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Access denied", data: null });
+  }
+
+  // Extract token from header
+  const token = authHeader.split(" ")[1];
+
+  // Check if token is present
+  if (!token) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Access denied", data: null });
+  }
+
+  try {
+    // Verify token
+    const response: string | JwtPayload = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    );
+
+    // Check if the response is a string (indicating an error)
+    if (typeof response === "string") {
+      return res
+        .status(401)
+        .json({ success: false, message: "Access denied", data: null });
+    }
+
+    // Check if the role is "user" and add userId to the request object
+    if (response.role && response.role === "user") {
+      return next();
+    } else {
+      return res
+        .status(401)
+        .json({ success: false, message: "Access denied", data: null });
+    }
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid token", data: null });
+  }
+};
 export const verifyResetTokenMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { code } = req.body;
-
+  const { passwordinfo } = req.body;
+  const { resetCode } = passwordinfo as passwordReset;
+  if (!resetCode) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Reset code is required" });
+  }
   try {
     const resetRecord = await prisma.passwordReset.findUnique({
-      where: { code },
+      where: { code: resetCode },
       include: { user: true },
     });
 
@@ -179,7 +239,6 @@ export const verifyResetTokenMiddleware = async (
     req.body.email = resetRecord.user.email;
     next();
   } catch (error: any) {
-    console.error("Error verifying reset token:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while verifying reset token",

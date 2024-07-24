@@ -6,6 +6,7 @@ import {
   verifyAdmin,
   verifyResetTokenMiddleware,
   verifyToken,
+  verifyUser,
 } from "../middleware/token.validation";
 import getIdFromToken from "../middleware/token.id";
 let userService = new UserService();
@@ -181,7 +182,6 @@ const approveRoleChangeRequest = async (req: Request, res: Response) => {
 const userPasswordRequest = async (req: Request, res: Response) => {
   try {
     const email = req.body.email;
-    console.log("Email received:", email);
     const response: Res = await userService.requestPasswordReset(email);
 
     if (response.success) {
@@ -202,9 +202,10 @@ const userPasswordRequest = async (req: Request, res: Response) => {
 //function to update the passord
 const updatePassword = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { passwordinfo } = req.body;
+    const { email, newPassword } = passwordinfo;
 
-    const response: Res = await userService.updatePassword(email, password);
+    const response: Res = await userService.updatePassword(email, newPassword);
 
     if (response.success) {
       res.status(200).json(response);
@@ -212,7 +213,6 @@ const updatePassword = async (req: Request, res: Response) => {
       res.status(400).json(response);
     }
   } catch (error) {
-    console.error("Error updating password:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while updating password",
@@ -258,6 +258,25 @@ const getChatRoom = async (req: Request, res: Response) => {
     });
   }
 };
+//delete role request
+const deleteRoleRequest = async (req: Request, res: Response) => {
+  try {
+    const request_id = req.body.request_id;
+    const response: Res = await userService.deleteRoleRequest(request_id);
+    if (response.success) {
+      res.status(200).json(response);
+    } else {
+      res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error deleting role request:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while deleting role request",
+      data: null,
+    });
+  }
+};
 
 //function to get user messages
 // export const getUserMessages = async (req: Request, res: Response) => {
@@ -279,6 +298,11 @@ const getChatRoom = async (req: Request, res: Response) => {
 // };
 
 // export const protectedGetUserMessages = [verifyToken, getUserMessages];
+export const protectedDeleteRoleRequest = [
+  verifyToken,
+  verifyAdmin,
+  deleteRoleRequest,
+];
 export const protectedChatRoom = [verifyToken, getChatRoom];
 export const protectedRoleExists = [verifyToken, checkRoleRequest];
 export const updateUserPassword = [verifyResetTokenMiddleware, updatePassword];
@@ -292,4 +316,8 @@ export const protectedApproveRoleChangeRequest = [
 export const protectedGetUserById = [verifyToken, getUserById];
 export const protectedUpdateInfo = [verifyToken, updateInfo];
 export const protectedDeactivateAccount = [verifyToken, deactivateAccount];
-export const protectedRequestRoleChange = [verifyToken, requestRoleChange];
+export const protectedRequestRoleChange = [
+  verifyToken,
+  verifyUser,
+  requestRoleChange,
+];

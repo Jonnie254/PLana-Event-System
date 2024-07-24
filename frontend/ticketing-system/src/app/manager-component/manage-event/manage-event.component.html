@@ -99,7 +99,7 @@
             <form [formGroup]="eventForm" (ngSubmit)="nextStep()">
                 <div>
                     <label class="text-gray-800 text-sm mb-2 font-semibold block">Date</label>
-                    <input type="date" formControlName="date"
+                    <input type="date" formControlName="date" [attr.min]="currentDate"
                         class="px-4 py-3 bg-gray-100 w-full text-gray-800 text-sm border-2 border-solid border-gray-300 focus:bg-transparent rounded-lg" />
                     <p *ngIf="eventForm.get('date')?.invalid && eventForm.get('date')?.touched"
                         class="text-red-500 text-sm">Event date is required</p>
@@ -214,7 +214,26 @@
     </div>
 </div>
 
+<div *ngIf="confirmationModal"
+    class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-40 before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]">
+    <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative">
+        <i class="pi pi-times text-red-600 absolute top-2 right-2 cursor-pointer" (click)="closeModal()"></i>
 
+        <div class="my-4 text-center">
+            <i class="pi pi-check-circle text-green-800 text-4xl"></i>
+
+            <h4 class="text-gray-800 text-base font-semibold mt-4">Are you sure you want to request event promotion?
+            </h4>
+
+            <div class="text-center space-x-4 mt-8">
+                <button type="button" (click)="closeModal()"
+                    class="px-4 py-2 rounded-lg text-gray-800 text-sm bg-gray-200 hover:bg-gray-300 active:bg-gray-200">Cancel</button>
+                <button type="button" (click)="requestPromotion(this.selectedEventId)"
+                    class="px-4 py-2 rounded-lg text-white text-sm bg-green-400 hover:bg-green-300 active:bg-green-600">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--event section -->
 <div class="font-sans overflow-x-auto">
     <table class="min-w-full bg-white">
@@ -257,10 +276,10 @@
                         <i class="pi pi-pen-to-square text-blue-500 hover:text-blue-700"
                             (click)="editModal(event.id)"></i>
                     </button>
-                    <button class="mr-4" title="Delete">
-                        <i class="pi pi-trash text-red-500 hover:text-red-700"></i>
+                    <button (click)="showConfirmationModal(event.id)" class="mr-4" title="promotion">
+                        <i class="pi pi-megaphone
+ text-green-400 hover:text-green-600"></i>
                     </button>
-
                 </td>
             </tr>
         </tbody>

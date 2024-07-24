@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BookingData, Event } from '../../interfaces/events';
 import { EventsService } from '../../services/events.service';
 import { CommonModule } from '@angular/common';
@@ -10,9 +10,12 @@ import {
   FormGroup,
   FormArray,
   Validators,
+  FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { NotificationsComponent } from '../../all-users/notifications/notifications.component';
+import { AuthService } from '../../services/auth.service';
+import { SearchPipe } from '../../pipes/search.pipe';
 
 @Component({
   selector: 'app-single-event',
@@ -25,6 +28,8 @@ import { NotificationsComponent } from '../../all-users/notifications/notificati
     CommonModule,
     ReactiveFormsModule,
     NotificationsComponent,
+    FormsModule,
+    SearchPipe,
   ],
 })
 export class SingleEventComponent {
@@ -35,12 +40,15 @@ export class SingleEventComponent {
   showNotification: boolean = false;
   notificationType: 'success' | 'error' = 'success';
   notificationMessage: string = '';
+  searchTerm: string = '';
 
   constructor(
     private eventsService: EventsService,
     private route: ActivatedRoute,
     private bookingService: BookingsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
   ) {
     this.bookingForm = this.fb.group({
       ticketType: ['', Validators.required],
@@ -85,6 +93,7 @@ export class SingleEventComponent {
   upcomingEvents() {
     this.eventsService.getUpcomngEvents().subscribe((res) => {
       this.events = res.data;
+      console.log(this.events);
     });
   }
 
@@ -125,9 +134,16 @@ export class SingleEventComponent {
   closeModal() {
     this.confirmationModal = false;
   }
-
   purchaseTicket() {
     if (this.bookingForm.invalid) {
+      return;
+    }
+
+    if (!this.authService.isAuthenticated()) {
+      // Store the current URL and redirect to login
+      this.authService.setRedirectUrl(this.router.url);
+      console.log(this.router.url);
+      this.router.navigate(['/login']);
       return;
     }
 

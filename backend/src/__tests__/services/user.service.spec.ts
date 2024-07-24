@@ -44,7 +44,7 @@ const mockUpdatedUser: userUpdate = {
   email: "johnsmith@yopmail.com",
   phone: "0987654321",
   profileImage: "profile.jpg",
-  password: "newpassword", // Use a password to test hashing
+  password: "newpassword",
 };
 
 const mockSingleUser = {

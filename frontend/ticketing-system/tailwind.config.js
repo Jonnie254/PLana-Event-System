@@ -3,6 +3,10 @@ module.exports = {
   content: ["./src/**/*.{html,ts}", "./node_modules/flowbite/**/*.js"],
   theme: {
     extend: {
+      colors: {
+        "user-message": "#bfdbfe", // Light blue
+        "other-message": "#e5e7eb", // Light gray
+      },
       fontFamily: { poppins: ["Poppins", "sans-serif"] },
       animation: {
         "fade-in-up": "fade-in-up 0.5s ease-out forwards",

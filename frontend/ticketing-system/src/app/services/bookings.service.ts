@@ -13,6 +13,7 @@ export class BookingsService {
   constructor(private http: HttpClient) {}
 
   makeBooking(bookingData: BookingData): Observable<Res> {
+    console.log('token', localStorage.getItem('token'));
     return this.http.post<Res>(`${this.baseUrl}/book/bookEvent`, bookingData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

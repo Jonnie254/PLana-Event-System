@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatMessage, ChatRoom } from '../../interfaces/chatmessage';
 import { UserService } from '../../services/user.service';
 import { Res } from '../../interfaces/res';
+import { AuthService } from '../../services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
@@ -27,18 +28,29 @@ export class InboxComponent implements OnInit, OnDestroy {
   selectedChatRoom: ChatRoom | null = null;
   newMessage = '';
   private messageSubscription: Subscription | undefined;
+  private userId: string | null = null;
+  currentUserId: string | null = null;
+  noRoomsMessage = 'You have no chat rooms yet.';
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
   constructor(
     private chatService: ChatService,
     private userService: UserService,
+    private authService: AuthService,
     private cdRef: ChangeDetectorRef
   ) {
     this.getUserChatRooms();
   }
 
   ngOnInit() {
+    // Subscribe to user ID
+    this.authService.userId$.subscribe((userId) => {
+      this.currentUserId = userId;
+      this.userId = userId;
+      this.getUserChatRooms();
+    });
+
     this.messageSubscription = this.chatService.getMessages().subscribe({
       next: (message: ChatMessage) => {
         if (
@@ -47,16 +59,19 @@ export class InboxComponent implements OnInit, OnDestroy {
         ) {
           this.messages.push(message);
           this.scrollToBottom();
-          this.cdRef.detectChanges(); // Manually trigger change detection
+          this.cdRef.detectChanges();
         }
       },
       error: (err) => console.error('Error receiving messages:', err),
     });
-
-    this.getUserChatRooms();
   }
 
   getUserChatRooms() {
+    if (!this.userId) {
+      console.error('User ID is not available');
+      return;
+    }
+
     this.userService.getChatRooms().subscribe({
       next: (res: Res) => {
         this.chatRooms = res.data;
@@ -72,7 +87,12 @@ export class InboxComponent implements OnInit, OnDestroy {
           });
         });
 
-        this.cdRef.detectChanges(); // Ensure change detection runs after data is fetched
+        // Select the first chat room if available
+        if (this.chatRooms.length > 0) {
+          this.selectChatRoom(this.chatRooms[0]);
+        }
+
+        this.cdRef.detectChanges();
       },
       error: (err) => console.error('Error receiving chat rooms:', err),
     });
@@ -88,14 +108,14 @@ export class InboxComponent implements OnInit, OnDestroy {
     this.chatService.joinRoom(chatRoom.id);
 
     this.scrollToBottom();
-    this.cdRef.detectChanges(); // Manually trigger change detection
+    this.cdRef.detectChanges();
   }
 
   sendMessage() {
     if (this.newMessage.trim() !== '' && this.selectedChatRoom) {
       this.chatService.sendMessage(this.newMessage, this.selectedChatRoom.id);
       this.newMessage = '';
-      this.cdRef.detectChanges(); // Manually trigger change detection
+      this.cdRef.detectChanges();
     }
   }
 
@@ -103,7 +123,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       const container = this.messagesContainer.nativeElement;
       container.scrollTop = container.scrollHeight;
-      this.cdRef.detectChanges(); // Ensure the changes are reflected
+      this.cdRef.detectChanges();
     }, 0);
   }
 

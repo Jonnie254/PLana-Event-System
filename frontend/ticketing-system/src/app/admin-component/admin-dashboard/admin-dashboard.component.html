@@ -47,7 +47,7 @@
 
                             <li>
                                 <a (click)="logout()"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
                                     role="menuitem">Sign out</a>
                             </li>
                         </ul>
@@ -104,6 +104,14 @@
                     <span class="flex-1 ms-3 whitespace-nowrap">Role Requests</span>
                     <span
                         class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="promotions"
+                    class="flex items-center p-2 text-gray-100 font-semibold rounded-lg hover:text-red-500 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <i
+                        class="pi pi-crown w-5 text-2xl  text-gray-100 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                    <span class="flex-1 ms-3 whitespace-nowrap">Promotions</span>
                 </a>
             </li>
             <li>

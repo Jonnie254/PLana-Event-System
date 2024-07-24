@@ -27,6 +27,7 @@ export interface Event {
   singleTickets: SingleTicket[];
   createdAt: Date;
   createdBy: User;
+  eventPromotions: EventPromotion[];
 }
 export interface GroupTicketMember {
   id: string;
@@ -56,4 +57,13 @@ export interface Booking {
   canDelete: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+export interface EventPromotion {
+  id: string;
+  event: Event;
+  requestedBy: User;
+  requestedById: string;
+  isApproved: boolean;
+  isDeleted: boolean;
+  createdAt: Date;
 }

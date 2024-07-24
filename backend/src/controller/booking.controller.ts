@@ -4,6 +4,7 @@ import {
   verifyAdmin,
   verifyPlanner,
   verifyToken,
+  verifyUser,
 } from "../middleware/token.validation";
 import { BookingService } from "../services/booking.services";
 import getIdFromToken from "../middleware/token.id";
@@ -200,4 +201,4 @@ export const protectedGetAllBookings = [
   verifyAdmin,
   getAllBookings,
 ];
-export const protectedBookEvent = [verifyToken, createBooking];
+export const protectedBookEvent = [verifyToken, verifyUser, createBooking];

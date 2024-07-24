@@ -65,4 +65,40 @@ export class EventsService {
       }
     );
   }
+  requestEventPromotion(eventId: string): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.post<Res>(
+      `${this.baseUrl}/event/requestpromotion/${eventId}`,
+      {}, // Empty body if no payload is required
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+  getEventPromotions(): Observable<Res> {
+    return this.http.get<Res>(`${this.baseUrl}/event/promotionrequest`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+  }
+  // Approve event promotion
+  approveEventPromotion(promotionId: string): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.put<Res>(
+      `${this.baseUrl}/event/approvepromotion/${promotionId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+  // Get approved promotions
+  getAvailablePromotion(): Observable<Res> {
+    return this.http.get<Res>(`${this.baseUrl}/event/getApprovedPromotions`);
+  }
 }

@@ -22,6 +22,65 @@ export class BookingService {
     userIds: string[]
   ): Promise<Res> {
     try {
+      // Check if a chat room already exists for the event
+      const existingChatRoom = await prisma.chatRoom.findUnique({
+        where: { id: eventId },
+      });
+
+      // Fetch the event organizer
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        select: { createdById: true },
+      });
+
+      if (!event) {
+        return {
+          success: false,
+          message: "Event not found",
+          data: null,
+        };
+      }
+
+      const organizerId = event.createdById;
+
+      if (existingChatRoom) {
+        // Fetch existing users in the chat room
+        const existingChatRoomUsers = await prisma.chatRoomUser.findMany({
+          where: { chatRoomId: existingChatRoom.id },
+          select: { userId: true },
+        });
+
+        // Get existing user IDs
+        const existingUserIds = existingChatRoomUsers.map(
+          (chatRoomUser) => chatRoomUser.userId
+        );
+
+        // Combine new user IDs with the organizer ID
+        const allUserIds = [...new Set([...userIds, organizerId])];
+
+        // Determine new users to add
+        const newUserIds = allUserIds.filter(
+          (userId) => !existingUserIds.includes(userId)
+        );
+
+        // Add new users to the existing chat room
+        if (newUserIds.length > 0) {
+          await prisma.chatRoomUser.createMany({
+            data: newUserIds.map((userId) => ({
+              chatRoomId: existingChatRoom.id,
+              userId,
+            })),
+          });
+        }
+
+        return {
+          success: true,
+          message: "Chat room already exists; new users added successfully",
+          data: existingChatRoom,
+        };
+      }
+
+      // Create a new chat room if it doesn't exist
       const chatRoom = await prisma.chatRoom.create({
         data: {
           id: uuidv4(),
@@ -29,12 +88,20 @@ export class BookingService {
         },
       });
 
+      // Fetch admins
       const admins = await prisma.user.findMany({
         where: { role: "admin" },
         select: { id: true },
       });
 
-      const allUserIds = [...userIds, ...admins.map((admin) => admin.id)];
+      // Combine user IDs with admins and the event organizer
+      const allUserIds = [
+        ...new Set([
+          ...userIds,
+          organizerId,
+          ...admins.map((admin) => admin.id),
+        ]),
+      ];
 
       await prisma.chatRoomUser.createMany({
         data: allUserIds.map((userId) => ({
@@ -62,22 +129,15 @@ export class BookingService {
 
   // book Event function
   async bookEvent(booking: BookingData): Promise<Res> {
-    // const { error } = bookingSchema.validate(booking);
-    // if (error) {
-    //   return {
-    //     success: false,
-    //     message: `Validation error: ${error.message}`,
-    //     data: null,
-    //   };
-    // }
     const { eventId, userId, ticketType, groupEmails } = booking;
     try {
-      // Fetch event and its tickets
+      // Fetch event and its tickets, including the event organizer
       const event = await prisma.event.findUnique({
         where: { id: eventId },
         include: {
           singleTickets: true,
           groupTickets: true,
+          createdBy: true, // Fetch the event organizer
         },
       });
 
@@ -232,9 +292,10 @@ export class BookingService {
         }
       }
 
+      // Create or get chat room and include the event organizer
       const chatRoom = await this.createChatRoomForEvent(eventId, [
         userId,
-        event.createdById,
+        event.createdBy.id,
       ]);
 
       return {

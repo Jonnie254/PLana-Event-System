@@ -4,7 +4,7 @@
     (close)="hideNotification()">
 </app-notifications>
 <!-- Event info section -->
-<section class="relative bg-slate-900 py-12">
+<section class="relative bg-slate-700 py-12">
     <div class="max-w-screen-xl mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div class="text-white">
@@ -129,7 +129,8 @@
     <div class="flex justify-center w-full items-center">
         <h1 class="text-center text-3xl font-semibold w-96">More Events</h1>
         <div class="flex items-center relative">
-            <input type="text" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+            <input type="text" [(ngModel)]="searchTerm"
+                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                 placeholder="search ..." />
             <button class="absolute right-0 inset-y-0 flex items-center pr-3">
                 <i class="pi pi-search"></i>
@@ -138,7 +139,7 @@
     </div>
     <div class="items-center max-w-screen-xl gap-4 px-4 py-8 mx-auto xl:gap-8 md:grid md:grid-cols-3 sm:py-4 lg:px-6">
         <!-- Event 1 -->
-        <div *ngFor="let event of events"
+        <div *ngFor="let event of events | search: searchTerm"
             class="flex flex-col  cursor-pointer justify-between max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
             <a>
                 <img *ngIf="event.image" class="rounded-t-lg w-full max-h-48 object-cover" [src]="event.image"
