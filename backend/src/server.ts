@@ -9,6 +9,7 @@ import eventRouter from "./routes/event.routes";
 import bookingRouter from "./routes/booking.routes";
 import chatService from "./services/chat.service";
 import chatRouter from "./routes/chat.routes";
+import analyticsRouter from "./routes/analytics.routes";
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
@@ -41,6 +42,7 @@ app.use("/auth", authRouter);
 app.use("/event", eventRouter);
 app.use("/book", bookingRouter);
 app.use("/chat", chatRouter);
+app.use("/analytics", analyticsRouter);
 
 chatService(io);
 

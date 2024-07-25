@@ -66,9 +66,15 @@ export class UserService {
     }
   }
   // Function to get all users
-  async getAllUsers() {
+  async getAllUsers(): Promise<Res> {
     try {
-      let users = await this.prisma.user.findMany();
+      let users = await this.prisma.user.findMany({
+        where: {
+          role: {
+            not: "admin",
+          },
+        },
+      });
       return {
         success: true,
         message: "Users fetched successfully",

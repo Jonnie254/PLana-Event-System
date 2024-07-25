@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BookingData, Event } from '../../interfaces/events';
@@ -142,7 +142,6 @@ export class SingleEventComponent {
     if (!this.authService.isAuthenticated()) {
       // Store the current URL and redirect to login
       this.authService.setRedirectUrl(this.router.url);
-      console.log(this.router.url);
       this.router.navigate(['/login']);
       return;
     }
@@ -161,6 +160,7 @@ export class SingleEventComponent {
         if (res.success) {
           this.showNotificationWithTimeout(res.message, 'success');
           this.closeModal();
+          this.resetForm();
         } else {
           this.showNotificationWithTimeout(
             `Booking failed: ${res.message}`,
@@ -181,5 +181,13 @@ export class SingleEventComponent {
         this.closeModal();
       }
     );
+  }
+  resetForm() {
+    this.bookingForm.reset();
+    this.clearGroupEmailFields();
+    // Reset the ticket type to an empty string
+    this.bookingForm.patchValue({
+      ticketType: '',
+    });
   }
 }

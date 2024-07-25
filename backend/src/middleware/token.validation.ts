@@ -143,7 +143,7 @@ export const verifyPlannerOrAdmin = (
         .json({ success: false, message: "Access denied", data: null });
     } else if (
       response.role &&
-      (response.role === "planner" || response.role === "admin")
+      (response.role === "Event Planner" || response.role === "admin")
     ) {
       return next();
     } else {

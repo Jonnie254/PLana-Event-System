@@ -26,7 +26,7 @@
                         class="block py-2 px-3 text-white rounded cursor-pointer hover:bg-blue-700 md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0">Attend</a>
                 </li>
                 <li>
-                    <a routerLink="/about-us"
+                    <a routerLink="/about-us" *ngIf="!isLoggedin"
                         class="block py-2 px-3 text-white rounded hover:bg-blue-700 md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0">About
                         Us</a>
                 </li>

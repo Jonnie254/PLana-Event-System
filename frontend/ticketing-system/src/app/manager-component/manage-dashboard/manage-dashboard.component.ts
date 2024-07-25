@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
+import { BookingData } from '../../interfaces/events';
+import { BookingsService } from '../../services/bookings.service';
+import { Res } from '../../interfaces/res';
+import { AnalyticsService } from '../../services/analytics.service';
+import { EventsService } from '../../services/events.service';
 
 @Component({
   selector: 'app-manage-dashboard',
@@ -9,11 +14,22 @@ import { ChartModule } from 'primeng/chart';
   styleUrl: './manage-dashboard.component.css',
 })
 export class ManageDashboardComponent {
+  Bookings: BookingData[] = [];
+  totalBookings: number = 0;
+  totalRevenue: number = 0;
+  totalEvents: number = 0;
   basicData: any;
   basicOptions: any;
   data: any;
   options: any;
-  constructor() {
+  constructor(
+    private bookingService: BookingsService,
+    private analyticsService: AnalyticsService,
+    private eventService: EventsService
+  ) {
+    this.getPlannerBookings();
+    this.getAllPlannerTotalRevenue();
+    this.getAllEventsPlanner();
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue(
@@ -74,5 +90,46 @@ export class ManageDashboardComponent {
         },
       },
     };
+  }
+  getPlannerBookings() {
+    this.bookingService.getBookingsByPlanner().subscribe({
+      next: (response: Res) => {
+        if (response.success) {
+          this.Bookings = response.data;
+          this.totalBookings = this.Bookings.length;
+        }
+      },
+      error: () => {
+        console.log('Error fetching total revenue');
+      },
+    });
+  }
+
+  getAllPlannerTotalRevenue() {
+    this.analyticsService.getPlannerTotalRevenue().subscribe({
+      next: (response: Res) => {
+        if (response.success) {
+          console.log(response.data);
+          this.totalRevenue = response.data;
+        }
+      },
+      error: () => {
+        console.log('Error fetching total revenue');
+      },
+    });
+  }
+
+  getAllEventsPlanner() {
+    this.eventService.getEventsByPlanner().subscribe({
+      next: (response: Res) => {
+        if (response.success) {
+          console.log(response.data);
+          this.totalEvents = response.data.length;
+        }
+      },
+      error: () => {
+        console.log('Error fetching total revenue');
+      },
+    });
   }
 }

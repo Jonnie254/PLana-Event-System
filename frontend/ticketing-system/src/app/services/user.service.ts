@@ -108,4 +108,13 @@ export class UserService {
       passwordinfo,
     });
   }
+  //get all users
+  getUsers(): Observable<Res> {
+    const token = localStorage.getItem('token');
+    return this.http.get<Res>(`${this.baseUrl}/user/getAllUsers`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 }

@@ -23,6 +23,7 @@ export interface Event {
   eventTime: string;
   location: string;
   createdById: string;
+  singleTicket: SingleTicket;
   groupTickets: GroupTicket[];
   singleTickets: SingleTicket[];
   createdAt: Date;

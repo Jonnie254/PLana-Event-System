@@ -68,7 +68,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   startSlideshow() {
     this.intervalId = setInterval(() => {
       this.nextSlide();
-    }, 5000); // Change slide every 5 seconds
+    }, 10000); // Change slide every 5 seconds
   }
 
   stopSlideshow() {

@@ -5,40 +5,31 @@
             <div class="bg-orange-100 rounded-lg shadow-md p-6">
                 <div
                     class="flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full p-3 w-16 h-16">
-                    <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
+                    <i pi class="pi pi-calendar text-white text-2xl"></i>
                 </div>
                 <div class="mt-4">
                     <p class="text-lg font-semibold text-gray-800">Total Events</p>
-                    <p class="text-gray-600 text-sm mt-1">1,200</p>
+                    <p class="text-gray-600 text-sm mt-1">{{totalEvents}}</p>
                 </div>
             </div>
             <div class="bg-amber-100 rounded-lg shadow-md p-6">
                 <div
                     class="flex items-center justify-center bg-gradient-to-r from-green-500 to-teal-500 rounded-full p-3 w-16 h-16">
-                    <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
+                    <i pi class="pi pi-money-bill text-white text-2xl"></i>
                 </div>
                 <div class="mt-4">
                     <p class="text-lg font-semibold text-gray-800">Revenue</p>
-                    <p class="text-gray-600 text-sm mt-1">$50,000</p>
+                    <p class="text-gray-600 text-sm mt-1">{{totalRevenue}}</p>
                 </div>
             </div>
-            <div class="bg-lime-100 rounded-lg shadow-md p-6">
+            <div class="bg-lime-100 rounded-lg shadow-md p-6 cursor-pointer hover:shadow-2xl">
                 <div
                     class="flex items-center justify-center bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full p-3 w-16 h-16">
-                    <svg class="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
+                    <i pi class="pi pi-calendar text-white text-2xl"></i>
                 </div>
                 <div class="mt-4">
-                    <p class="text-lg font-semibold text-gray-800">Issues</p>
-                    <p class="text-gray-600 text-sm mt-1">5</p>
+                    <p class="text-lg font-semibold text-gray-800">Total Bookings</p>
+                    <p class="text-gray-600 text-sm mt-1">{{totalBookings}}</p>
                 </div>
             </div>
         </div>
@@ -46,11 +37,16 @@
 </div>
 <div class="bg-slate-400 rounded-md shadow-lg  ">
     <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="card bg-white m-2 rounded-lg shadow-md">
-            <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+        <!-- Revenue Chart -->
+        <div class="card bg-white m-2 rounded-lg shadow-md p-4">
+            <h3 class="text-xl font-semibold mb-2">Total Revenue</h3>
+            <p-chart type="bar" [data]="revenueData" [options]="revenueOptions"></p-chart>
         </div>
-        <div class="card  bg-white m-2 rounded-lg shadow-md">
-            <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+
+        <!-- Bookings by Event Chart -->
+        <div class="card bg-white m-2 rounded-lg shadow-md p-4">
+            <h3 class="text-xl font-semibold mb-2">Bookings by Event</h3>
+            <p-chart type="bar" [data]="bookingsByEventData" [options]="bookingsByEventOptions"></p-chart>
         </div>
     </div>
 </div>

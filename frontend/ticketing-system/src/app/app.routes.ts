@@ -21,6 +21,9 @@ import { RoleRequestsComponent } from './admin-component/role-requests/role-requ
 import { ManageAllEventsComponent } from './admin-component/manage-all-events/manage-all-events.component';
 import { ForgotPasswordComponent } from './all-users/forgot-password/forgot-password.component';
 import { ManageAllPromotionsComponent } from './admin-component/manage-all-promotions/manage-all-promotions.component';
+import { RoleGuard } from './guards/role.guard';
+import { AuthGuard } from './guards/auth.guard';
+import { NotFoundComponent } from './all-users/not-found/not-found.component';
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   {
@@ -63,36 +66,34 @@ export const routes: Routes = [
     path: 'forgot-password',
     component: ForgotPasswordComponent,
   },
+
   {
     path: 'admin-dashboard',
     component: AdminDashboardComponent,
+    canActivate: [AuthGuard, RoleGuard],
     children: [
       { path: '', component: AdminHomepageComponent },
       { path: 'dashboard', component: AdminHomepageComponent },
-      {
-        path: 'profile',
-        component: ProfileComponent,
-      },
       { path: 'promotions', component: ManageAllPromotionsComponent },
       { path: 'events', component: ManageAllEventsComponent },
       { path: 'inbox', component: InboxComponent },
       { path: 'roles', component: RoleRequestsComponent },
+      { path: 'profile', component: ProfileComponent },
       { path: 'users', component: ManageUsersComponent },
     ],
   },
   {
     path: 'event-dashboard',
     component: EventDashboardComponent,
+    canActivate: [AuthGuard, RoleGuard],
     children: [
       { path: '', component: ManageDashboardComponent },
       { path: 'dashboard', component: ManageDashboardComponent },
       { path: 'client', component: ClientsComponent },
-      {
-        path: 'profile',
-        component: ProfileComponent,
-      },
       { path: 'inbox', component: InboxComponent },
+      { path: 'profile', component: ProfileComponent },
       { path: 'events', component: ManageEventComponent },
     ],
   },
+  { path: '**', component: NotFoundComponent },
 ];
